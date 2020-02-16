@@ -1,0 +1,5 @@
+Inofficial local Debian package for a subset of the AWS SDK for C++
+
+Upstream:  https://github.com/aws/aws-sdk-cpp
+
+Packaged by Dirk Eddelbuettel <edd@debian.org>

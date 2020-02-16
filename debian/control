@@ -1,0 +1,16 @@
+Source: aws-sdk-cpp-only-s3
+Section: devel
+Priority: optional
+Maintainer: Dirk Eddelbuettel <edd@debian.org>
+Standards-Version: 4.4.0
+Build-Depends: debhelper (>= 11~), gcc (>= 4:4.0), binutils (>= 2.12.90.0.9), cmake, libaws-c-common-dev, libaws-checksums-dev, libaws-c-event-stream-dev
+Homepage: https://github.com/aws/aws-sdk-cpp
+
+Package: libaws-sdk-cpp-only-s3-dev
+Section: libdevel
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: AWS SDK for C++ Subset Containing only S3 -- development package
+ Inofficial package. Currently contains a static (not shared) library.
+ .
+ AWS SDK for C++ --- but only the subset needed to compile with s3 support.

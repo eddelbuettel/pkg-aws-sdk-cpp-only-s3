@@ -1,0 +1,5 @@
+aws-sdk-cpp-only-s3 (1.7.275-1) bionic; urgency=low
+
+  * Informal and unofficial package
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sun, 16 Feb 2020 10:19:24 -0600
