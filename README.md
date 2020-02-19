@@ -1,5 +1,5 @@
 
-## Minimally viable unofficial Debian packaging for the AWS C Event Stream
+## Minimally viable unofficial Debian packaging for the AWS SDK for C++
 
 Taken as a complete snapshot on 2020-02-15 at sha1 dfd0b02d95 from
 https://github.com/aws/aws-sdk-cpp
