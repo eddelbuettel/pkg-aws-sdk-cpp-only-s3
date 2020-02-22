@@ -13,5 +13,5 @@
   * permissions and limitations under the License.
   */
 
-#define USE_AWS_MEMORY_MANAGEMENT
+/* #undef USE_AWS_MEMORY_MANAGEMENT */
 
