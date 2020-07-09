@@ -1,17 +1,7 @@
-/*
-  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-  * 
-  * Licensed under the Apache License, Version 2.0 (the "License").
-  * You may not use this file except in compliance with the License.
-  * A copy of the License is located at
-  * 
-  *  http://aws.amazon.com/apache2.0
-  * 
-  * or in the "license" file accompanying this file. This file is distributed
-  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-  * express or implied. See the License for the specific language governing
-  * permissions and limitations under the License.
-  */
+/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
+ */
 
 #include <aws/core/utils/DateTime.h>
 
@@ -27,6 +17,7 @@ static const char* CLASS_TAG = "DateTime";
 static const char* RFC822_DATE_FORMAT_STR_MINUS_Z = "%a, %d %b %Y %H:%M:%S";
 static const char* RFC822_DATE_FORMAT_STR_WITH_Z = "%a, %d %b %Y %H:%M:%S %Z";
 static const char* ISO_8601_LONG_DATE_FORMAT_STR = "%Y-%m-%dT%H:%M:%SZ";
+static const char* ISO_8601_LONG_BASIC_DATE_FORMAT_STR = "%Y%m%dT%H%M%SZ";
 
 using namespace Aws::Utils;
 
@@ -88,7 +79,7 @@ static int GetWeekDayNumberFromStr(const char* timeString, size_t startIndex, si
             case 'n':
                 return 0;
             default:
-                return -1;       
+                return -1;
             }
         default:
             return -1;
@@ -219,7 +210,7 @@ static int GetMonthNumberFromStr(const char* timeString, size_t startIndex, size
                 return 2;
             default:
                 return -1;
-            }        
+            }
         default:
             return -1;
         }
@@ -418,7 +409,7 @@ static bool IsUtcTimeZone(const char* str)
 
         case 'C':
         case 'c':
-            c = str[++index];           
+            c = str[++index];
             switch (c)
             {
             case 'T':
@@ -478,7 +469,7 @@ static bool IsUtcTimeZone(const char* str)
     default:
         return false;
     }
-    
+
 }
 
 class DateParser
@@ -515,8 +506,8 @@ static const int MAX_LEN = 100;
 class RFC822DateParser : public DateParser
 {
 public:
-    RFC822DateParser(const char* toParse) : DateParser(toParse), m_state(0) 
-    { 
+    RFC822DateParser(const char* toParse) : DateParser(toParse), m_state(0)
+    {
     }
 
     /**
@@ -524,13 +515,13 @@ public:
      */
     void Parse() override
     {
-        size_t len = strlen(m_toParse);        
+        size_t len = strlen(m_toParse);
 
         //DOS check
         if (len > MAX_LEN)
         {
-            AWS_LOGSTREAM_WARN(CLASS_TAG, "Incoming String to parse too long with len " << len)  
-            m_error = true;         
+            AWS_LOGSTREAM_WARN(CLASS_TAG, "Incoming String to parse too long with length: " << len)
+            m_error = true;
             return;
         }
 
@@ -546,7 +537,7 @@ public:
             {
                 case 0:
                     if(c == ',')
-                    {                        
+                    {
                         int weekNumber = GetWeekDayNumberFromStr(m_toParse, stateStartIndex, index + 1);
 
                         if (weekNumber > -1)
@@ -565,10 +556,10 @@ public:
                         m_error = true;
                     }
                     break;
-                case 1:                    
+                case 1:
                     if (isspace(c))
                     {
-                        m_state = 2; 
+                        m_state = 2;
                         stateStartIndex = index + 1;
                     }
                     else
@@ -683,8 +674,8 @@ public:
                     if (isalpha(c) && (index - stateStartIndex) < 5)
                     {
                         m_tz[index - stateStartIndex] = c;
-                    }                   
-                    
+                    }
+
                     break;
             }
 
@@ -724,7 +715,7 @@ public:
         //DOS check
         if (len > MAX_LEN)
         {
-            AWS_LOGSTREAM_WARN(CLASS_TAG, "Incoming String to parse too long with len " << len)
+            AWS_LOGSTREAM_WARN(CLASS_TAG, "Incoming String to parse too long with length: " << len)
             m_error = true;
             return;
         }
@@ -863,8 +854,161 @@ private:
     int m_state;
 };
 
+class ISO_8601BasicDateParser : public DateParser
+{
+public:
+    ISO_8601BasicDateParser(const char* stringToParse) : DateParser(stringToParse), m_state(0)
+    {
+    }
+
+    //parses "%Y%m%dT%H%M%SZ or "%Y%m%dT%H%M%S000Z"
+    void Parse() override
+    {
+        size_t len = strlen(m_toParse);
+
+        //DOS check
+        if (len > MAX_LEN)
+        {
+            AWS_LOGSTREAM_WARN(CLASS_TAG, "Incoming String to parse too long with length: " << len)
+            m_error = true;
+            return;
+        }
+
+        size_t index = 0;
+        size_t stateStartIndex = 0;
+        const int finalState = 7;
+
+        while (m_state <= finalState && !m_error && index < len)
+        {
+            char c = m_toParse[index];
+            switch (m_state)
+            {
+                // On year: %Y
+                case 0:
+                    if (isdigit(c))
+                    {
+                        m_parsedTimestamp.tm_year = m_parsedTimestamp.tm_year * 10 + (c - '0');
+                        if (index - stateStartIndex == 3)
+                        {
+                            m_state = 1;
+                            stateStartIndex = index + 1;
+                            m_parsedTimestamp.tm_year -= 1900;
+                        }
+                    }
+                    else
+                    {
+                        m_error = true;
+                    }
+                    break;
+                // On month: %m
+                case 1:
+                    if (isdigit(c))
+                    {
+                        m_parsedTimestamp.tm_mon = m_parsedTimestamp.tm_mon * 10 + (c - '0');
+                        if (index - stateStartIndex == 1)
+                        {
+                            m_state = 2;
+                            stateStartIndex = index + 1;
+                            m_parsedTimestamp.tm_mon -= 1;
+                        }
+                    }
+                    else
+                    {
+                        m_error = true;
+                    }
+                    break;
+                // On month day: %d
+                case 2:
+                    if (c == 'T' && index - stateStartIndex == 2)
+                    {
+                        m_state = 3;
+                        stateStartIndex = index + 1;
+                    }
+                    else if (isdigit(c))
+                    {
+                        m_parsedTimestamp.tm_mday = m_parsedTimestamp.tm_mday * 10 + (c - '0');
+                    }
+                    else
+                    {
+                        m_error = true;
+                    }
+                    break;
+                // On hour: %H
+                case 3:
+                    if (isdigit(c))
+                    {
+                        m_parsedTimestamp.tm_hour = m_parsedTimestamp.tm_hour * 10 + (c - '0');
+                        if (index - stateStartIndex == 1)
+                        {
+                            m_state = 4;
+                            stateStartIndex = index + 1;
+                        }
+                    }
+                    else
+                    {
+                        m_error = true;
+                    }
+                    break;
+                // On minute: %M
+                case 4:
+                    if (isdigit(c))
+                    {
+                        m_parsedTimestamp.tm_min = m_parsedTimestamp.tm_min * 10 + (c - '0');
+                        if (index - stateStartIndex == 1)
+                        {
+                            m_state = 5;
+                            stateStartIndex = index + 1;
+                        }
+                    }
+                    else
+                    {
+                        m_error = true;
+                    }
+                    break;
+                // On second: %S
+                case 5:
+                    if (isdigit(c))
+                    {
+                        m_parsedTimestamp.tm_sec = m_parsedTimestamp.tm_sec * 10 + (c - '0');
+                        if (index - stateStartIndex == 1)
+                        {
+                            m_state = 6;
+                            stateStartIndex = index + 1;
+                        }
+                    }
+                    else
+                    {
+                        m_error = true;
+                    }
+                    break;
+                // On TZ: Z or 000Z
+                case 6:
+                    if (c == 'Z' && (index - stateStartIndex == 0 || index - stateStartIndex == 3))
+                    {
+                        m_state = finalState;
+                    }
+                    else if (!isdigit(c) || index - stateStartIndex > 3)
+                    {
+                        m_error = true;
+                    }
+                    break;
+                default:
+                    m_error = true;
+                    break;
+            }
+            index++;
+        }
+
+        m_error = (m_error || m_state != finalState);
+    }
+
+
+private:
+    int m_state;
+};
+
 DateTime::DateTime(const std::chrono::system_clock::time_point& timepointToAssign) : m_time(timepointToAssign), m_valid(true)
-{   
+{
 }
 
 DateTime::DateTime(int64_t millisSinceEpoch) : m_valid(true)
@@ -968,8 +1112,10 @@ Aws::String DateTime::ToLocalTimeString(DateFormat format) const
     {
     case DateFormat::ISO_8601:
         return ToLocalTimeString(ISO_8601_LONG_DATE_FORMAT_STR);
+    case DateFormat::ISO_8601_BASIC:
+        return ToLocalTimeString(ISO_8601_LONG_BASIC_DATE_FORMAT_STR);
     case DateFormat::RFC822:
-        return ToLocalTimeString(RFC822_DATE_FORMAT_STR_WITH_Z);   
+        return ToLocalTimeString(RFC822_DATE_FORMAT_STR_WITH_Z);
     default:
         assert(0);
         return "";
@@ -991,9 +1137,11 @@ Aws::String DateTime::ToGmtString(DateFormat format) const
     {
     case DateFormat::ISO_8601:
         return ToGmtString(ISO_8601_LONG_DATE_FORMAT_STR);
+    case DateFormat::ISO_8601_BASIC:
+        return ToGmtString(ISO_8601_LONG_BASIC_DATE_FORMAT_STR);
     case DateFormat::RFC822:
     {
-        //Windows erronously drops the local timezone in for %Z
+        //Windows erroneously drops the local timezone in for %Z
         Aws::String rfc822GmtString = ToGmtString(RFC822_DATE_FORMAT_STR_MINUS_Z);
         rfc822GmtString += " GMT";
         return rfc822GmtString;
@@ -1142,7 +1290,7 @@ std::chrono::milliseconds DateTime::operator-(const DateTime& other) const
 }
 
 void DateTime::ConvertTimestampStringToTimePoint(const char* timestamp, DateFormat format)
-{  
+{
     std::tm timeStruct;
     bool isUtc = true;
 
@@ -1164,7 +1312,16 @@ void DateTime::ConvertTimestampStringToTimePoint(const char* timestamp, DateForm
         m_valid = parser.WasParseSuccessful();
         isUtc = parser.ShouldIAssumeThisIsUTC();
         timeStruct = parser.GetParsedTimestamp();
-        break;      
+        break;
+    }
+    case DateFormat::ISO_8601_BASIC:
+    {
+        ISO_8601BasicDateParser parser(timestamp);
+        parser.Parse();
+        m_valid = parser.WasParseSuccessful();
+        isUtc = parser.ShouldIAssumeThisIsUTC();
+        timeStruct = parser.GetParsedTimestamp();
+        break;
     }
     case DateFormat::AutoDetect:
     {
@@ -1186,15 +1343,24 @@ void DateTime::ConvertTimestampStringToTimePoint(const char* timestamp, DateForm
             timeStruct = isoParser.GetParsedTimestamp();
             break;
         }
+        ISO_8601BasicDateParser isoBasicParser(timestamp);
+        isoBasicParser.Parse();
+        if (isoBasicParser.WasParseSuccessful())
+        {
+            m_valid = true;
+            isUtc = isoBasicParser.ShouldIAssumeThisIsUTC();
+            timeStruct = isoBasicParser.GetParsedTimestamp();
+            break;
+        }
         m_valid = false;
         break;
     }
-    default:       
+    default:
         assert(0);
-    }    
-  
+    }
+
     if (m_valid)
-    {        
+    {
         std::time_t tt;
         if(isUtc)
         {
@@ -1207,7 +1373,7 @@ void DateTime::ConvertTimestampStringToTimePoint(const char* timestamp, DateForm
             tt = std::mktime(&timeStruct);
         }
         m_time = std::chrono::system_clock::from_time_t(tt);
-    }    
+    }
 }
 
 tm DateTime::GetTimeStruct(bool localTime) const

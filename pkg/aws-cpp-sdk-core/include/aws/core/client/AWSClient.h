@@ -1,16 +1,6 @@
-/*
- * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located at
- *
- *  http://aws.amazon.com/apache2.0
- *
- * or in the "license" file accompanying this file. This file is distributed
- * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
  */
 
 #pragma once
@@ -116,13 +106,13 @@ namespace Aws
             virtual ~AWSClient() { };
 
             /**
-             * Generates a signed Uri using the injected signer. for the supplied uri and http method. expirationInSecodns defaults
+             * Generates a signed Uri using the injected signer. for the supplied uri and http method. expirationInSeconds defaults
              * to 0 which is the default 7 days. The implication of this function is using auth signer v4 to sign it.
              */
             Aws::String GeneratePresignedUrl(Aws::Http::URI& uri, Aws::Http::HttpMethod method, long long expirationInSeconds = 0);
 
             /**
-             * Generates a signed Uri using the injected signer. for the supplied uri, http method and customized headers. expirationInSecodns defaults
+             * Generates a signed Uri using the injected signer. for the supplied uri, http method and customized headers. expirationInSeconds defaults
              * to 0 which is the default 7 days. The implication of this function is using auth signer v4 to sign it.
              */
             Aws::String GeneratePresignedUrl(Aws::Http::URI& uri, Aws::Http::HttpMethod method, const Aws::Http::HeaderValueCollection& customizedHeaders, long long expirationInSeconds = 0);
@@ -134,7 +124,7 @@ namespace Aws
             Aws::String GeneratePresignedUrl(Aws::Http::URI& uri, Aws::Http::HttpMethod method, const char* region, long long expirationInSeconds = 0) const;
 
             /**
-             * Generates a signed Uri using the injected signer. for the supplied uri, http method and customized headers. expirationInSecodns defaults
+             * Generates a signed Uri using the injected signer. for the supplied uri, http method and customized headers. expirationInSeconds defaults
              * to 0 which is the default 7 days.
              */
             Aws::String GeneratePresignedUrl(Aws::Http::URI& uri, Aws::Http::HttpMethod method, const char* region, const Aws::Http::HeaderValueCollection& customizedHeaders, long long expirationInSeconds = 0);
@@ -275,6 +265,7 @@ namespace Aws
              * Performs the HTTP request via the HTTP client while enforcing rate limiters
              */
             std::shared_ptr<Aws::Http::HttpResponse> MakeHttpRequest(std::shared_ptr<Aws::Http::HttpRequest>& request) const;
+            Aws::String m_region;
         private:
             /**
              * Try to adjust signer's clock
@@ -297,6 +288,7 @@ namespace Aws
             std::shared_ptr<Aws::Utils::RateLimits::RateLimiterInterface> m_readRateLimiter;
             Aws::String m_userAgent;
             std::shared_ptr<Aws::Utils::Crypto::Hash> m_hash;
+            long m_requestTimeoutMs;
             bool m_enableClockSkewAdjustment;
         };
 
@@ -359,7 +351,7 @@ namespace Aws
                 Http::HttpMethod method = Http::HttpMethod::HTTP_POST,
                 const char* signerName = Aws::Auth::SIGV4_SIGNER,
                 const char* requestName = "",
-                const char* signerRegionOverriede = nullptr) const;
+                const char* signerRegionOverride = nullptr) const;
 
             JsonOutcome MakeEventStreamRequest(std::shared_ptr<Aws::Http::HttpRequest>& request) const;
         };

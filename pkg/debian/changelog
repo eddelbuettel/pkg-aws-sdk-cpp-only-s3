@@ -1,3 +1,9 @@
+aws-sdk-cpp-only-s3 (1.8.6-1.1804.1) bionic; urgency=medium
+
+  * Informal and unofficial package
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Fri, 10 Jul 2020 12:58:59 +0000
+
 aws-sdk-cpp-only-s3 (1.7.275-1) bionic; urgency=low
 
   * Informal and unofficial package

@@ -1,17 +1,7 @@
-/*
-  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License").
-  * You may not use this file except in compliance with the License.
-  * A copy of the License is located at
-  *
-  *  http://aws.amazon.com/apache2.0
-  *
-  * or in the "license" file accompanying this file. This file is distributed
-  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-  * express or implied. See the License for the specific language governing
-  * permissions and limitations under the License.
-  */
+/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
+ */
 
 #include <aws/core/http/curl/CurlHandleContainer.h>
 #include <aws/core/utils/logging/LogMacros.h>
@@ -134,8 +124,8 @@ void CurlHandleContainer::SetDefaultOptionsOnHandle(CURL* handle)
     curl_easy_setopt(handle, CURLOPT_LOW_SPEED_LIMIT, m_lowSpeedLimit);
     curl_easy_setopt(handle, CURLOPT_LOW_SPEED_TIME, m_lowSpeedTime < 1000 ? (m_lowSpeedTime == 0 ? 0 : 1) : m_lowSpeedTime / 1000);
     curl_easy_setopt(handle, CURLOPT_TCP_KEEPALIVE, m_enableTcpKeepAlive ? 1L : 0L);
-    curl_easy_setopt(handle, CURLOPT_TCP_KEEPINTVL, m_tcpKeepAliveIntervalMs);
-    curl_easy_setopt(handle, CURLOPT_TCP_KEEPIDLE, m_tcpKeepAliveIntervalMs);
+    curl_easy_setopt(handle, CURLOPT_TCP_KEEPINTVL, m_tcpKeepAliveIntervalMs / 1000);
+    curl_easy_setopt(handle, CURLOPT_TCP_KEEPIDLE, m_tcpKeepAliveIntervalMs / 1000);
 #ifdef CURL_HAS_H2
     curl_easy_setopt(handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0);
 #endif

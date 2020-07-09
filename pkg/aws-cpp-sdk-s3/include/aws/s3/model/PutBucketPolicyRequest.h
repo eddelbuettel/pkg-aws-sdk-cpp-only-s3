@@ -1,17 +1,7 @@
-﻿/*
-* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License").
-* You may not use this file except in compliance with the License.
-* A copy of the License is located at
-*
-*  http://aws.amazon.com/apache2.0
-*
-* or in the "license" file accompanying this file. This file is distributed
-* on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-* express or implied. See the License for the specific language governing
-* permissions and limitations under the License.
-*/
+﻿/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
+ */
 
 #pragma once
 #include <aws/s3/S3_EXPORTS.h>
@@ -93,47 +83,6 @@ namespace Model
 
 
     /**
-     * <p>The MD5 hash of the request body.</p>
-     */
-    inline const Aws::String& GetContentMD5() const{ return m_contentMD5; }
-
-    /**
-     * <p>The MD5 hash of the request body.</p>
-     */
-    inline bool ContentMD5HasBeenSet() const { return m_contentMD5HasBeenSet; }
-
-    /**
-     * <p>The MD5 hash of the request body.</p>
-     */
-    inline void SetContentMD5(const Aws::String& value) { m_contentMD5HasBeenSet = true; m_contentMD5 = value; }
-
-    /**
-     * <p>The MD5 hash of the request body.</p>
-     */
-    inline void SetContentMD5(Aws::String&& value) { m_contentMD5HasBeenSet = true; m_contentMD5 = std::move(value); }
-
-    /**
-     * <p>The MD5 hash of the request body.</p>
-     */
-    inline void SetContentMD5(const char* value) { m_contentMD5HasBeenSet = true; m_contentMD5.assign(value); }
-
-    /**
-     * <p>The MD5 hash of the request body.</p>
-     */
-    inline PutBucketPolicyRequest& WithContentMD5(const Aws::String& value) { SetContentMD5(value); return *this;}
-
-    /**
-     * <p>The MD5 hash of the request body.</p>
-     */
-    inline PutBucketPolicyRequest& WithContentMD5(Aws::String&& value) { SetContentMD5(std::move(value)); return *this;}
-
-    /**
-     * <p>The MD5 hash of the request body.</p>
-     */
-    inline PutBucketPolicyRequest& WithContentMD5(const char* value) { SetContentMD5(value); return *this;}
-
-
-    /**
      * <p>Set this parameter to true to confirm that you want to remove your
      * permissions to change this bucket policy in the future.</p>
      */
@@ -201,9 +150,6 @@ namespace Model
 
     Aws::String m_bucket;
     bool m_bucketHasBeenSet;
-
-    Aws::String m_contentMD5;
-    bool m_contentMD5HasBeenSet;
 
     bool m_confirmRemoveSelfBucketAccess;
     bool m_confirmRemoveSelfBucketAccessHasBeenSet;

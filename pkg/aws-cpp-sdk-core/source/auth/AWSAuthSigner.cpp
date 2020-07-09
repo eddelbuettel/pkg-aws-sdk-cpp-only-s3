@@ -1,17 +1,7 @@
-/*
-  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License").
-  * You may not use this file except in compliance with the License.
-  * A copy of the License is located at
-  *
-  *  http://aws.amazon.com/apache2.0
-  *
-  * or in the "license" file accompanying this file. This file is distributed
-  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-  * express or implied. See the License for the specific language governing
-  * permissions and limitations under the License.
-  */
+/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
+ */
 
 #include <aws/core/auth/AWSAuthSigner.h>
 
@@ -60,7 +50,6 @@ static const char* X_AMZN_TRACE_ID = "x-amzn-trace-id";
 static const char* X_AMZ_CONTENT_SHA256 = "x-amz-content-sha256";
 static const char* USER_AGENT = "user-agent";
 static const char* SIGNING_KEY = "AWS4";
-static const char* LONG_DATE_FORMAT_STR = "%Y%m%dT%H%M%SZ";
 static const char* SIMPLE_DATE_FORMAT_STR = "%Y%m%d";
 static const char* EMPTY_STRING_SHA256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
 
@@ -233,7 +222,7 @@ bool AWSAuthV4Signer::SignRequest(Aws::Http::HttpRequest& request, const char* r
 
     //calculate date header to use in internal signature (this also goes into date header).
     DateTime now = GetSigningTimestamp();
-    Aws::String dateHeaderValue = now.ToGmtString(LONG_DATE_FORMAT_STR);
+    Aws::String dateHeaderValue = now.ToGmtString(DateFormat::ISO_8601_BASIC);
     request.SetHeaderValue(AWS_DATE_HEADER, dateHeaderValue);
 
     Aws::StringStream headersStream;
@@ -283,11 +272,11 @@ bool AWSAuthV4Signer::SignRequest(Aws::Http::HttpRequest& request, const char* r
     }
 
     auto sha256Digest = hashResult.GetResult();
-    Aws::String cannonicalRequestHash = HashingUtils::HexEncode(sha256Digest);
+    Aws::String canonicalRequestHash = HashingUtils::HexEncode(sha256Digest);
     Aws::String simpleDate = now.ToGmtString(SIMPLE_DATE_FORMAT_STR);
 
     Aws::String signingRegion = region ? region : m_region;
-    Aws::String stringToSign = GenerateStringToSign(dateHeaderValue, simpleDate, cannonicalRequestHash, signingRegion, m_serviceName);
+    Aws::String stringToSign = GenerateStringToSign(dateHeaderValue, simpleDate, canonicalRequestHash, signingRegion, m_serviceName);
     auto finalSignature = GenerateSignature(credentials, stringToSign, simpleDate, signingRegion, m_serviceName);
 
     Aws::StringStream ss;
@@ -334,7 +323,7 @@ bool AWSAuthV4Signer::PresignRequest(Aws::Http::HttpRequest& request, const char
 
     //calculate date header to use in internal signature (this also goes into date header).
     DateTime now = GetSigningTimestamp();
-    Aws::String dateQueryValue = now.ToGmtString(LONG_DATE_FORMAT_STR);
+    Aws::String dateQueryValue = now.ToGmtString(DateFormat::ISO_8601_BASIC);
     request.AddQueryStringParameter(Http::AWS_DATE_HEADER, dateQueryValue);
 
     Aws::StringStream headersStream;
@@ -404,10 +393,9 @@ bool AWSAuthV4Signer::PresignRequest(Aws::Http::HttpRequest& request, const char
     }
 
     auto sha256Digest = hashResult.GetResult();
-    auto cannonicalRequestHash = HashingUtils::HexEncode(sha256Digest);
+    auto canonicalRequestHash = HashingUtils::HexEncode(sha256Digest);
 
-    auto stringToSign = GenerateStringToSign(dateQueryValue, simpleDate, cannonicalRequestHash, signingRegion, signingServiceName);
-
+    auto stringToSign = GenerateStringToSign(dateQueryValue, simpleDate, canonicalRequestHash, signingRegion, signingServiceName);
     auto finalSigningHash = GenerateSignature(credentials, stringToSign, simpleDate, signingRegion, signingServiceName);
     if (finalSigningHash.empty())
     {
@@ -544,7 +532,6 @@ Aws::Utils::ByteBuffer AWSAuthV4Signer::ComputeHash(const Aws::String& secretKey
     return hashResult.GetResult();
 }
 
-
 AWSAuthEventStreamV4Signer::AWSAuthEventStreamV4Signer(const std::shared_ptr<Auth::AWSCredentialsProvider>&
         credentialsProvider, const char* serviceName, const Aws::String& region) :
     m_serviceName(serviceName),
@@ -575,7 +562,7 @@ bool AWSAuthEventStreamV4Signer::SignRequest(Aws::Http::HttpRequest& request, co
 
     //calculate date header to use in internal signature (this also goes into date header).
     DateTime now = GetSigningTimestamp();
-    Aws::String dateHeaderValue = now.ToGmtString(LONG_DATE_FORMAT_STR);
+    Aws::String dateHeaderValue = now.ToGmtString(DateFormat::ISO_8601_BASIC);
     request.SetHeaderValue(AWS_DATE_HEADER, dateHeaderValue);
 
     Aws::StringStream headersStream;
@@ -625,11 +612,11 @@ bool AWSAuthEventStreamV4Signer::SignRequest(Aws::Http::HttpRequest& request, co
     }
 
     auto sha256Digest = hashResult.GetResult();
-    Aws::String cannonicalRequestHash = HashingUtils::HexEncode(sha256Digest);
+    Aws::String canonicalRequestHash = HashingUtils::HexEncode(sha256Digest);
     Aws::String simpleDate = now.ToGmtString(SIMPLE_DATE_FORMAT_STR);
 
     Aws::String signingRegion = region ? region : m_region;
-    Aws::String stringToSign = GenerateStringToSign(dateHeaderValue, simpleDate, cannonicalRequestHash, signingRegion, m_serviceName);
+    Aws::String stringToSign = GenerateStringToSign(dateHeaderValue, simpleDate, canonicalRequestHash, signingRegion, m_serviceName);
     auto finalSignature = GenerateSignature(credentials, stringToSign, simpleDate, signingRegion, m_serviceName);
 
     Aws::StringStream ss;
@@ -664,7 +651,7 @@ bool AWSAuthEventStreamV4Signer::SignEventMessage(Event::Message& message, Aws::
     stringToSign << EVENT_STREAM_PAYLOAD << NEWLINE;
     const DateTime now = GetSigningTimestamp();
     const auto simpleDate = now.ToGmtString(SIMPLE_DATE_FORMAT_STR);
-    stringToSign << now.ToGmtString(LONG_DATE_FORMAT_STR) << NEWLINE
+    stringToSign << now.ToGmtString(DateFormat::ISO_8601_BASIC) << NEWLINE
         <<  simpleDate << "/" << m_region << "/"
         << m_serviceName << "/aws4_request" << NEWLINE << priorSignature << NEWLINE;
 

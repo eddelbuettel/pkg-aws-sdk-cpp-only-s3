@@ -1,17 +1,7 @@
-/*
-  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License").
-  * You may not use this file except in compliance with the License.
-  * A copy of the License is located at
-  *
-  *  http://aws.amazon.com/apache2.0
-  *
-  * or in the "license" file accompanying this file. This file is distributed
-  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-  * express or implied. See the License for the specific language governing
-  * permissions and limitations under the License.
-  */
+/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
+ */
 
 
 #include <aws/core/utils/crypto/bcrypt/CryptoImpl.h>
@@ -22,9 +12,9 @@
 #include <aws/core/utils/crypto/Hash.h>
 #include <aws/core/utils/HashingUtils.h>
 #include <atomic>
-#include <bcrypt.h> 
-#include <winternl.h> 
-#include <winerror.h> 
+#include <bcrypt.h>
+#include <winternl.h>
+#include <winerror.h>
 
 #ifndef NT_SUCCESS
 #define NT_SUCCESS(Status) ((NTSTATUS)(Status) >= 0)
@@ -391,6 +381,7 @@ namespace Aws
             void BCryptSymmetricCipher::Init()
             {
                 m_workingIv = m_initializationVector;
+                m_encryptDecryptCalled = false;
             }
 
             BCRYPT_KEY_HANDLE BCryptSymmetricCipher::ImportKeyBlob(BCRYPT_ALG_HANDLE algHandle, CryptoBuffer& key)
@@ -424,18 +415,18 @@ namespace Aws
                     m_keyHandle = ImportKeyBlob(m_algHandle, m_key);
                     if (!m_keyHandle)
                     {
-                        m_failure = true;                        
+                        m_failure = true;
                         return;
                     }
 
                     if(!m_authInfoPtr && m_initializationVector.GetLength() > 0)
-                    {              
+                    {
                         NTSTATUS status = BCryptSetProperty(m_keyHandle, BCRYPT_INITIALIZATION_VECTOR, m_initializationVector.GetUnderlyingData(), static_cast<ULONG>(m_initializationVector.GetLength()), 0);
 
                         if (!NT_SUCCESS(status))
                         {
                             m_failure = true;
-                            AWS_LOGSTREAM_ERROR(SYM_CIPHER_TAG, "Failed to set symetric key initialization vector with status code " << status);
+                            AWS_LOGSTREAM_ERROR(SYM_CIPHER_TAG, "Failed to set symmetric key initialization vector with status code " << status);
                             return;
                         }
                     }
@@ -450,7 +441,7 @@ namespace Aws
                     return CryptoBuffer();
                 }
 
-                if (unEncryptedData.GetLength() == 0)
+                if (unEncryptedData.GetLength() == 0 && m_encryptDecryptCalled)
                 {
                     return CryptoBuffer();
                 }
@@ -473,7 +464,7 @@ namespace Aws
                 //iv was set on the key itself, so we don't need to pass it here.
                 NTSTATUS status = BCryptEncrypt(m_keyHandle, unEncryptedData.GetUnderlyingData(), (ULONG)unEncryptedData.GetLength(),
                     m_authInfoPtr, iv, ivSize, encryptedText.GetUnderlyingData(), (ULONG)encryptedText.GetLength(), &lengthWritten, m_flags);
-
+                m_encryptDecryptCalled = true;
                 if (!NT_SUCCESS(status))
                 {
                     m_failure = true;
@@ -502,7 +493,7 @@ namespace Aws
                     return CryptoBuffer();
                 }
 
-                if (encryptedData.GetLength() == 0)
+                if (encryptedData.GetLength() == 0 && m_encryptDecryptCalled)
                 {
                     return CryptoBuffer();
                 }
@@ -523,7 +514,7 @@ namespace Aws
                 //iv was set on the key itself, so we don't need to pass it here.
                 NTSTATUS status = BCryptDecrypt(m_keyHandle, encryptedData.GetUnderlyingData(), (ULONG)encryptedData.GetLength(),
                     m_authInfoPtr, iv, ivSize, decryptedText.GetUnderlyingData(), (ULONG)decryptedText.GetLength(), &lengthWritten, m_flags);
-
+                m_encryptDecryptCalled = true;
                 if (!NT_SUCCESS(status))
                 {
                     m_failure = true;
@@ -650,10 +641,10 @@ namespace Aws
                     return CryptoBuffer();
                 }
             }
-            
+
             CryptoBuffer AES_CBC_Cipher_BCrypt::EncryptBuffer(const CryptoBuffer& unEncryptedData)
-            {                    
-                return BCryptSymmetricCipher::EncryptBuffer(FillInOverflow(unEncryptedData));              
+            {
+                return BCryptSymmetricCipher::EncryptBuffer(FillInOverflow(unEncryptedData));
             }
 
             /**
@@ -666,11 +657,11 @@ namespace Aws
                 {
                     m_flags = BCRYPT_BLOCK_PADDING;
                     return BCryptSymmetricCipher::EncryptBuffer(m_blockOverflow);
-                }               
+                }
 
                 return CryptoBuffer();
             }
-            
+
             CryptoBuffer AES_CBC_Cipher_BCrypt::DecryptBuffer(const CryptoBuffer& encryptedData)
             {
                 return BCryptSymmetricCipher::DecryptBuffer(FillInOverflow(encryptedData));
@@ -679,7 +670,7 @@ namespace Aws
             CryptoBuffer AES_CBC_Cipher_BCrypt::FinalizeDecryption()
             {
                 if ( m_blockOverflow.GetLength() > 0)
-                {                   
+                {
                     m_flags = BCRYPT_BLOCK_PADDING;
                     return BCryptSymmetricCipher::DecryptBuffer(m_blockOverflow);
                 }
@@ -840,7 +831,7 @@ namespace Aws
                 for (size_t i = 0; i < slicedBuffers.GetLength(); ++i)
                 {
                     if (slicedBuffers[i].GetLength() == BlockSizeBytes || (m_blockOverflow.GetLength() > 0 && slicedBuffers.GetLength() == 1))
-                    {                       
+                    {
                         ULONG lengthWritten = static_cast<ULONG>(BlockSizeBytes);
                         CryptoBuffer encryptedText(BlockSizeBytes);
 
@@ -891,7 +882,7 @@ namespace Aws
             size_t AES_CTR_Cipher_BCrypt::GetKeyLengthBits() const
             {
                 return KeyLengthBits;
-            }           
+            }
 
             void AES_CTR_Cipher_BCrypt::InitBuffersToNull(Aws::Vector<ByteBuffer*>& initBuffers)
             {
@@ -926,8 +917,17 @@ namespace Aws
                 InitKey();
             }
 
-            AES_GCM_Cipher_BCrypt::AES_GCM_Cipher_BCrypt(CryptoBuffer&& key, CryptoBuffer&& initializationVector, CryptoBuffer&& tag) :
-                    BCryptSymmetricCipher(std::move(key), std::move(initializationVector), std::move(tag)), m_macBuffer(TagLengthBytes)
+            AES_GCM_Cipher_BCrypt::AES_GCM_Cipher_BCrypt(const CryptoBuffer& key, const CryptoBuffer* aad) :
+                    BCryptSymmetricCipher(key, NonceSizeBytes), m_macBuffer(TagLengthBytes), m_aad(*aad)
+            {
+                m_tag = CryptoBuffer(TagLengthBytes);
+                InitCipher();
+                InitKey();
+            }
+
+            AES_GCM_Cipher_BCrypt::AES_GCM_Cipher_BCrypt(CryptoBuffer&& key, CryptoBuffer&& initializationVector,
+                CryptoBuffer&& tag, CryptoBuffer&& aad) :
+                    BCryptSymmetricCipher(std::move(key), std::move(initializationVector), std::move(tag)), m_macBuffer(TagLengthBytes), m_aad(std::move(aad))
             {
                 if (m_tag.GetLength() == 0)
                 {
@@ -937,8 +937,9 @@ namespace Aws
                 InitKey();
             }
 
-            AES_GCM_Cipher_BCrypt::AES_GCM_Cipher_BCrypt(const CryptoBuffer& key, const CryptoBuffer& initializationVector, const CryptoBuffer& tag) :
-                    BCryptSymmetricCipher(key, initializationVector, tag), m_macBuffer(TagLengthBytes)
+            AES_GCM_Cipher_BCrypt::AES_GCM_Cipher_BCrypt(const CryptoBuffer& key, const CryptoBuffer& initializationVector,
+                const CryptoBuffer& tag, const CryptoBuffer& aad) :
+                    BCryptSymmetricCipher(key, initializationVector, tag), m_macBuffer(TagLengthBytes), m_aad(aad)
             {
                 if (m_tag.GetLength() == 0)
                 {
@@ -989,6 +990,7 @@ namespace Aws
 
                     m_finalBuffer = CryptoBuffer(workingBuffer.GetUnderlyingData() + workingBuffer.GetLength() - (TagLengthBytes +  offset), TagLengthBytes + offset);
                     workingBuffer = CryptoBuffer(workingBuffer.GetUnderlyingData(), workingBuffer.GetLength() - (TagLengthBytes + offset));
+                    m_encryptDecryptCalled = true;
                     return BCryptSymmetricCipher::EncryptBuffer(workingBuffer);
                 }
                 else
@@ -1026,6 +1028,7 @@ namespace Aws
                     auto offset = workingBuffer.GetLength() % TagLengthBytes;
                     m_finalBuffer = CryptoBuffer(workingBuffer.GetUnderlyingData() + workingBuffer.GetLength() - (TagLengthBytes + offset), TagLengthBytes + offset);
                     workingBuffer = CryptoBuffer(workingBuffer.GetUnderlyingData(), workingBuffer.GetLength() - (TagLengthBytes + offset));
+                    m_encryptDecryptCalled = true;
                     return BCryptSymmetricCipher::DecryptBuffer(workingBuffer);
                 }
                 else
@@ -1080,6 +1083,13 @@ namespace Aws
                 m_authInfo.pbMacContext = m_macBuffer.GetUnderlyingData();
                 m_authInfo.cbMacContext = static_cast<ULONG>(m_macBuffer.GetLength());
                 m_authInfo.cbData = 0;
+
+                if (m_aad.GetLength() > 0)
+                {
+                    m_authInfo.pbAuthData = m_aad.GetUnderlyingData();
+                    m_authInfo.cbAuthData = static_cast<ULONG>(m_aad.GetLength());
+                }
+
                 m_authInfo.dwFlags = BCRYPT_AUTH_MODE_CHAIN_CALLS_FLAG;
 
                 m_authInfoPtr = &m_authInfo;
@@ -1163,11 +1173,11 @@ namespace Aws
                 }
 
                 BCRYPT_KEY_HANDLE keyHandleToEncrypt = ImportKeyBlob(m_algHandle, m_operatingKeyBuffer);
-                
+
                 NTSTATUS status = 0;
 
                 ULONG sizeOfCipherText;
-                status = BCryptExportKey(keyHandleToEncrypt, m_keyHandle, BCRYPT_AES_WRAP_KEY_BLOB, 
+                status = BCryptExportKey(keyHandleToEncrypt, m_keyHandle, BCRYPT_AES_WRAP_KEY_BLOB,
                     nullptr, 0, &sizeOfCipherText, 0);
 
                 if (!NT_SUCCESS(status))
@@ -1176,7 +1186,7 @@ namespace Aws
                     AWS_LOGSTREAM_ERROR(KEYWRAP_LOG_TAG, "Failed to export symmetric key size with status code " << status);
                     return CryptoBuffer();
                 }
-                
+
                 CryptoBuffer cipherText(static_cast<size_t>(sizeOfCipherText));
                 status = BCryptExportKey(keyHandleToEncrypt, m_keyHandle, BCRYPT_AES_WRAP_KEY_BLOB,
                     cipherText.GetUnderlyingData(), static_cast<ULONG>(cipherText.GetLength()), &sizeOfCipherText, 0);
@@ -1204,8 +1214,8 @@ namespace Aws
                     return CryptoBuffer();
                 }
 
-                CryptoBuffer returnBuffer;    
-                
+                CryptoBuffer returnBuffer;
+
                 BCRYPT_KEY_HANDLE importKey(nullptr);
                 NTSTATUS status = BCryptImportKey(m_algHandle, m_keyHandle, BCRYPT_AES_WRAP_KEY_BLOB, &importKey,
                     nullptr, 0,
@@ -1215,7 +1225,7 @@ namespace Aws
                 {
                     ULONG exportSize(0);
                     CryptoBuffer outputBuffer(sizeof(BCRYPT_KEY_DATA_BLOB_HEADER) + m_operatingKeyBuffer.GetLength());
-                    status = BCryptExportKey(importKey, nullptr, BCRYPT_KEY_DATA_BLOB, 
+                    status = BCryptExportKey(importKey, nullptr, BCRYPT_KEY_DATA_BLOB,
                                 outputBuffer.GetUnderlyingData(), static_cast<ULONG>(outputBuffer.GetLength()), &exportSize, 0);
 
                     if (NT_SUCCESS(status))
@@ -1231,7 +1241,7 @@ namespace Aws
 
                     BCryptDestroyKey(importKey);
                 }
-                else               
+                else
                 {
                     m_failure = true;
                     AWS_LOGSTREAM_ERROR(KEYWRAP_LOG_TAG, "Failed to import symmetric key with status code " << status);

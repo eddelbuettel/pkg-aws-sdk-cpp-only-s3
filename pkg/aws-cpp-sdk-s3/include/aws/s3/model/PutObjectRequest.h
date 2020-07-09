@@ -1,17 +1,7 @@
-﻿/*
-* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License").
-* You may not use this file except in compliance with the License.
-* A copy of the License is located at
-*
-*  http://aws.amazon.com/apache2.0
-*
-* or in the "license" file accompanying this file. This file is distributed
-* on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-* express or implied. See the License for the specific language governing
-* permissions and limitations under the License.
-*/
+﻿/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
+ */
 
 #pragma once
 #include <aws/s3/S3_EXPORTS.h>
@@ -911,37 +901,37 @@ namespace Model
 
 
     /**
-     * <p>If you don't specify, Standard is the default storage class. Amazon S3
+     * <p>If you don't specify, S3 Standard is the default storage class. Amazon S3
      * supports other storage classes.</p>
      */
     inline const StorageClass& GetStorageClass() const{ return m_storageClass; }
 
     /**
-     * <p>If you don't specify, Standard is the default storage class. Amazon S3
+     * <p>If you don't specify, S3 Standard is the default storage class. Amazon S3
      * supports other storage classes.</p>
      */
     inline bool StorageClassHasBeenSet() const { return m_storageClassHasBeenSet; }
 
     /**
-     * <p>If you don't specify, Standard is the default storage class. Amazon S3
+     * <p>If you don't specify, S3 Standard is the default storage class. Amazon S3
      * supports other storage classes.</p>
      */
     inline void SetStorageClass(const StorageClass& value) { m_storageClassHasBeenSet = true; m_storageClass = value; }
 
     /**
-     * <p>If you don't specify, Standard is the default storage class. Amazon S3
+     * <p>If you don't specify, S3 Standard is the default storage class. Amazon S3
      * supports other storage classes.</p>
      */
     inline void SetStorageClass(StorageClass&& value) { m_storageClassHasBeenSet = true; m_storageClass = std::move(value); }
 
     /**
-     * <p>If you don't specify, Standard is the default storage class. Amazon S3
+     * <p>If you don't specify, S3 Standard is the default storage class. Amazon S3
      * supports other storage classes.</p>
      */
     inline PutObjectRequest& WithStorageClass(const StorageClass& value) { SetStorageClass(value); return *this;}
 
     /**
-     * <p>If you don't specify, Standard is the default storage class. Amazon S3
+     * <p>If you don't specify, S3 Standard is the default storage class. Amazon S3
      * supports other storage classes.</p>
      */
     inline PutObjectRequest& WithStorageClass(StorageClass&& value) { SetStorageClass(std::move(value)); return *this;}

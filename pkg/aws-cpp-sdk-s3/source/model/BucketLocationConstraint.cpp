@@ -1,17 +1,7 @@
-﻿/*
-* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License").
-* You may not use this file except in compliance with the License.
-* A copy of the License is located at
-*
-*  http://aws.amazon.com/apache2.0
-*
-* or in the "license" file accompanying this file. This file is distributed
-* on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-* express or implied. See the License for the specific language governing
-* permissions and limitations under the License.
-*/
+﻿/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
+ */
 
 #include <aws/s3/model/BucketLocationConstraint.h>
 #include <aws/core/utils/HashingUtils.h>
@@ -42,6 +32,7 @@ namespace Aws
         static const int cn_north_1_HASH = HashingUtils::HashString("cn-north-1");
         static const int eu_central_1_HASH = HashingUtils::HashString("eu-central-1");
         static const int eu_west_3_HASH = HashingUtils::HashString("eu-west-3");
+        static const int eu_north_1_HASH = HashingUtils::HashString("eu-north-1");
         static const int eu_west_2_HASH = HashingUtils::HashString("eu-west-2");
         static const int ap_northeast_2_HASH = HashingUtils::HashString("ap-northeast-2");
         static const int ca_central_1_HASH = HashingUtils::HashString("ca-central-1");
@@ -101,6 +92,10 @@ namespace Aws
           else if (hashCode == eu_west_3_HASH)
           {
             return BucketLocationConstraint::eu_west_3;
+          }
+          else if (hashCode == eu_north_1_HASH)
+          {
+            return BucketLocationConstraint::eu_north_1;
           }
           else if (hashCode == eu_west_2_HASH)
           {
@@ -168,6 +163,8 @@ namespace Aws
             return "eu-central-1";
           case BucketLocationConstraint::eu_west_3:
             return "eu-west-3";
+          case BucketLocationConstraint::eu_north_1:
+            return "eu-north-1";
           case BucketLocationConstraint::eu_west_2:
             return "eu-west-2";
           case BucketLocationConstraint::ap_northeast_2:

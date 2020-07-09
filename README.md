@@ -5,6 +5,8 @@ Taken as a complete snapshot on 2020-02-15 at sha1 dfd0b02d95 from
 https://github.com/aws/aws-sdk-cpp
 and _removed everything_ not need to build only 's3;core'
 
+Updated 2020-07-09 with release 1.8.6 sha1 1602b75
+
 ### Changes
 
 No changes made other than
@@ -12,13 +14,14 @@ No changes made other than
 - downloading / copying all retained files _as is_ into `pkg/`
 - addition of `pkg/debian/` directory for unofficial / informal Debian packaging
 - addition of this README.md to document the changes
+- one-line patch as documented to `aws-cpp-sdk-core/include/aws/core/SDKConfig.h`
 
 ### Usage
 
 Create yourself a `.orig.tar.gz` and use it with `dpkg-buildpackage` as for example via 
 
 ```sh
-tar cvz --exclude=.git --exclude=debian --file aws-sdk-cpp-only-s3_1.7.275.orig.tar.gz pkg
+tar cvz --exclude=.git --exclude=debian --file aws-sdk-cpp-only-s3_1.8.6.orig.tar.gz pkg
 cd pkg && dpkg-buildpackage -rfakeroot -us -uc -tc
 ```
 

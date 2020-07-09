@@ -1,17 +1,7 @@
-/*
-  * Copyright 2010-201 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License").
-  * You may not use this file except in compliance with the License.
-  * A copy of the License is located at
-  *
-  *  http://aws.amazon.com/apache2.0
-  *
-  * or in the "license" file accompanying this file. This file is distributed
-  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-  * express or implied. See the License for the specific language governing
-  * permissions and limitations under the License.
-  */
+/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
+ */
 
 #pragma once
 
@@ -70,7 +60,7 @@ namespace Aws
             inline Scheme GetScheme() const { return m_scheme; }
 
             /**
-            * Sets scheme, if the port is incompaitible with this scheme, the port will automatically be set as well.
+            * Sets scheme, if the port is incompatible with this scheme, the port will automatically be set as well.
             */
             void SetScheme(Scheme value);
 
@@ -124,7 +114,7 @@ namespace Aws
             Aws::String GetFormParameters() const;
 
             /**
-            * Cannonicalizes the query string.
+            * Canonicalizes the query string.
             */
             void CanonicalizeQueryString();
 
@@ -151,6 +141,7 @@ namespace Aws
 
             /**
              * URLEncodes the path portions of path (doesn't encode the "/" portion)
+             * Keeps the first and the last "/".
              */
             static Aws::String URLEncodePath(const Aws::String& path);
 

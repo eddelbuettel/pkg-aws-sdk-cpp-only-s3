@@ -1,17 +1,7 @@
-﻿/*
-* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License").
-* You may not use this file except in compliance with the License.
-* A copy of the License is located at
-*
-*  http://aws.amazon.com/apache2.0
-*
-* or in the "license" file accompanying this file. This file is distributed
-* on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-* express or implied. See the License for the specific language governing
-* permissions and limitations under the License.
-*/
+﻿/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
+ */
 
 #include <aws/external/gtest.h>
 #include <aws/core/auth/AWSCredentialsProviderChain.h>
@@ -84,6 +74,7 @@ namespace
     static std::string BASE_EVENT_STREAM_TEST_BUCKET_NAME = "eventstream";
     static std::string BASE_EVENT_STREAM_LARGE_FILE_TEST_BUCKET_NAME = "largeeventstream";
     static std::string BASE_EVENT_STREAM_ERRORS_IN_EVENT_TEST_BUCKET_NAME = "errorsinevent";
+    static std::string BASE_CROSS_REGION_BUCKET_NAME = "crossregion";
     static const char* ALLOCATION_TAG = "BucketAndObjectOperationTest";
     static const char* TEST_OBJ_KEY = "TestObjectKey";
     static const char* TEST_NOT_MODIFIED_OBJ_KEY = "TestNotModifiedObjectKey";
@@ -118,6 +109,7 @@ namespace
         AppendUUID(BASE_EVENT_STREAM_TEST_BUCKET_NAME);
         AppendUUID(BASE_EVENT_STREAM_LARGE_FILE_TEST_BUCKET_NAME);
         AppendUUID(BASE_EVENT_STREAM_ERRORS_IN_EVENT_TEST_BUCKET_NAME);
+        AppendUUID(BASE_CROSS_REGION_BUCKET_NAME);
     }
 
     class RetryFiveTimesRetryStrategy: public Aws::Client::RetryStrategy
@@ -131,6 +123,7 @@ namespace
     {
     public:
         static std::shared_ptr<S3Client> Client;
+        static std::shared_ptr<S3Client> globalClient;
         static std::shared_ptr<S3Client> oregonClient;
         static std::shared_ptr<S3Client> retryClient;
         static std::shared_ptr<HttpClientFactory> ClientFactory;
@@ -165,6 +158,10 @@ namespace
             Client = Aws::MakeShared<S3Client>(ALLOCATION_TAG,
                     Aws::MakeShared<DefaultAWSCredentialsProviderChain>(ALLOCATION_TAG), config,
                         AWSAuthV4Signer::PayloadSigningPolicy::Never /*signPayloads*/, true /*useVirtualAddressing*/, Aws::S3::US_EAST_1_REGIONAL_ENDPOINT_OPTION::LEGACY);
+            config.region = Aws::Region::AWS_GLOBAL;
+            globalClient = Aws::MakeShared<S3Client>(ALLOCATION_TAG,
+                Aws::MakeShared<DefaultAWSCredentialsProviderChain>(ALLOCATION_TAG), config,
+                    AWSAuthV4Signer::PayloadSigningPolicy::Never /*signPayloads*/, true /*useVirtualAddressing*/);
             config.region = Aws::Region::US_WEST_2;
             config.useDualStack = true;
             oregonClient = Aws::MakeShared<S3Client>(ALLOCATION_TAG,
@@ -194,6 +191,7 @@ namespace
             DeleteBucket(CalculateBucketName(BASE_EVENT_STREAM_ERRORS_IN_EVENT_TEST_BUCKET_NAME.c_str()));
             Limiter = nullptr;
             Client = nullptr;
+            globalClient = nullptr;
             oregonClient = nullptr;
             m_HttpClient = nullptr;
             retryClient = nullptr;
@@ -258,10 +256,10 @@ namespace
             unsigned timeoutCount = 0;
             while (timeoutCount++ < TIMEOUT_MAX)
             {
-                HeadBucketRequest headBucketRequest;
-                headBucketRequest.SetBucket(bucketName);
-                HeadBucketOutcome headBucketOutcome = client->HeadBucket(headBucketRequest);
-                if (headBucketOutcome.IsSuccess())
+                ListObjectsRequest listObjectsRequest;
+                listObjectsRequest.SetBucket(bucketName);
+                ListObjectsOutcome listObjectsOutcome = client->ListObjects(listObjectsRequest);
+                if (listObjectsOutcome.IsSuccess())
                 {
                     return true;
                 }
@@ -277,16 +275,40 @@ namespace
             unsigned timeoutCount = 0;
             while (timeoutCount++ < TIMEOUT_MAX)
             {
-                HeadObjectRequest headObjectRequest;
-                headObjectRequest.SetBucket(bucketName);
-                headObjectRequest.SetKey(objectKey);
-                HeadObjectOutcome headObjectOutcome = Client->HeadObject(headObjectRequest);
-                if (headObjectOutcome.IsSuccess())
+                GetObjectRequest getObjectRequest;
+                getObjectRequest.SetBucket(bucketName);
+                getObjectRequest.SetKey(objectKey);
+                GetObjectOutcome getObjectOutcome = Client->GetObject(getObjectRequest);
+                if (getObjectOutcome.IsSuccess())
                 {
                     return true;
                 }
 
-                std::this_thread::sleep_for(std::chrono::seconds(1));
+                std::this_thread::sleep_for(std::chrono::seconds(5));
+            }
+
+            return false;
+        }
+
+        static bool WaitForObjectWithSSECToPropagate(const Aws::String& bucketName, const char* objectKey, const ByteBuffer& sseKey)
+        {
+            unsigned timeoutCount = 0;
+            Aws::String strBuffer(reinterpret_cast<char*>(sseKey.GetUnderlyingData()), sseKey.GetLength());
+            while (timeoutCount++ < TIMEOUT_MAX)
+            {
+                GetObjectRequest getObjectRequest;
+                getObjectRequest.SetBucket(bucketName);
+                getObjectRequest.SetKey(objectKey);
+                getObjectRequest.WithSSECustomerAlgorithm(Aws::S3::Model::ServerSideEncryptionMapper::GetNameForServerSideEncryption(Aws::S3::Model::ServerSideEncryption::AES256))
+                    .WithSSECustomerKey(HashingUtils::Base64Encode(sseKey))
+                    .WithSSECustomerKeyMD5(HashingUtils::Base64Encode(HashingUtils::CalculateMD5(strBuffer)));
+                GetObjectOutcome getObjectOutcome = Client->GetObject(getObjectRequest);
+                if (getObjectOutcome.IsSuccess())
+                {
+                    return true;
+                }
+
+                std::this_thread::sleep_for(std::chrono::seconds(5));
             }
 
             return false;
@@ -324,7 +346,7 @@ namespace
 
                 if (listObjectsOutcome.GetResult().GetContents().size() > 0)
                 {
-                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                    std::this_thread::sleep_for(std::chrono::seconds(5));
                 }
                 else
                 {
@@ -367,7 +389,7 @@ namespace
             EXPECT_TRUE(createBucketOutcome.IsSuccess());
             const CreateBucketResult& createBucketResult = createBucketOutcome.GetResult();
             EXPECT_TRUE(!createBucketResult.GetLocation().empty());
-            WaitForBucketToPropagate(fullBucketName);
+            EXPECT_TRUE(WaitForBucketToPropagate(fullBucketName));
             return fullBucketName;
         }
 
@@ -386,7 +408,7 @@ namespace
 
             ASSERT_EQ(HttpResponseCode::OK, putResponse->GetResponseCode());
 
-            WaitForObjectToPropagate(bucketName, TEST_OBJ_KEY);
+            ASSERT_TRUE(WaitForObjectToPropagate(bucketName, TEST_OBJ_KEY));
 
             // GetObject with presigned url
             Aws::String presignedUrlGet = Client->GeneratePresignedUrl(bucketName, TEST_OBJ_KEY, HttpMethod::HTTP_GET);
@@ -466,7 +488,7 @@ namespace
 
             ASSERT_EQ(HttpResponseCode::OK, putResponse->GetResponseCode());
 
-            WaitForObjectToPropagate(fullBucketName, TEST_OBJ_KEY);
+            ASSERT_TRUE(WaitForObjectWithSSECToPropagate(fullBucketName, TEST_OBJ_KEY, sseKey));
 
             // Test GetObject with SSEC Presigned Url
             Aws::String presignedUrlGet = Client->GeneratePresignedUrlWithSSEC(fullBucketName, TEST_OBJ_KEY, HttpMethod::HTTP_GET, HashingUtils::Base64Encode(sseKey));
@@ -506,6 +528,7 @@ namespace
 
 
     std::shared_ptr<S3Client> BucketAndObjectOperationTest::Client(nullptr);
+    std::shared_ptr<S3Client> BucketAndObjectOperationTest::globalClient(nullptr);
     std::shared_ptr<S3Client> BucketAndObjectOperationTest::oregonClient(nullptr);
     std::shared_ptr<S3Client> BucketAndObjectOperationTest::retryClient(nullptr);
     std::shared_ptr<HttpClientFactory> BucketAndObjectOperationTest::ClientFactory(nullptr);
@@ -656,7 +679,7 @@ namespace
         const CreateBucketResult& createBucketResult = createBucketOutcome.GetResult();
         ASSERT_TRUE(!createBucketResult.GetLocation().empty());
 
-        WaitForBucketToPropagate(fullBucketName);
+        ASSERT_TRUE(WaitForBucketToPropagate(fullBucketName));
 
         PutObjectRequest putObjectRequest;
         putObjectRequest.SetBucket(fullBucketName);
@@ -682,7 +705,7 @@ namespace
         const CreateBucketResult& createBucketResult = createBucketOutcome.GetResult();
         ASSERT_TRUE(!createBucketResult.GetLocation().empty());
 
-        WaitForBucketToPropagate(fullBucketName);
+        ASSERT_TRUE(WaitForBucketToPropagate(fullBucketName));
 
         PutObjectRequest putObjectRequest;
         putObjectRequest.SetBucket(fullBucketName);
@@ -769,7 +792,7 @@ namespace
         const CreateBucketResult& createBucketResult = createBucketOutcome.GetResult();
         ASSERT_TRUE(!createBucketResult.GetLocation().empty());
 
-        WaitForBucketToPropagate(fullBucketName);
+        ASSERT_TRUE(WaitForBucketToPropagate(fullBucketName));
 
         //test unicode
         {
@@ -933,7 +956,7 @@ namespace
         const CreateBucketResult& createBucketResult = createBucketOutcome.GetResult();
         ASSERT_TRUE(!createBucketResult.GetLocation().empty());
 
-        WaitForBucketToPropagate(fullBucketName);
+        ASSERT_TRUE(WaitForBucketToPropagate(fullBucketName));
 
         CreateMultipartUploadRequest createMultipartUploadRequest;
         createMultipartUploadRequest.SetBucket(fullBucketName);
@@ -1001,7 +1024,7 @@ namespace
                 completeMultipartUploadRequest);
         ASSERT_TRUE(completeMultipartUploadOutcome.IsSuccess());
 
-        WaitForObjectToPropagate(fullBucketName, multipartKeyName);
+        ASSERT_TRUE(WaitForObjectToPropagate(fullBucketName, multipartKeyName));
 
         GetObjectRequest getObjectRequest;
         getObjectRequest.SetBucket(fullBucketName);
@@ -1154,6 +1177,10 @@ namespace
 
         ListObjectsOutcome listObjectsOutcome = Client->ListObjects(listObjectsRequest);
         ASSERT_FALSE(listObjectsOutcome.IsSuccess());
+#if ENABLE_CURL_CLIENT
+        ASSERT_FALSE(listObjectsOutcome.GetError().GetRemoteHostIpAddress().empty());
+#endif
+        ASSERT_FALSE(listObjectsOutcome.GetError().GetRequestId().empty());
         ASSERT_EQ(S3Errors::NO_SUCH_BUCKET, listObjectsOutcome.GetError().GetErrorType());
 
         CreateBucketRequest createBucketRequest;
@@ -1169,6 +1196,10 @@ namespace
         getObjectRequest.SetKey("non-Existent");
         GetObjectOutcome getObjectOutcome = Client->GetObject(getObjectRequest);
         ASSERT_FALSE(getObjectOutcome.IsSuccess());
+#if ENABLE_CURL_CLIENT
+        ASSERT_FALSE(getObjectOutcome.GetError().GetRemoteHostIpAddress().empty());
+#endif
+        ASSERT_FALSE(getObjectOutcome.GetError().GetRequestId().empty());
         ASSERT_EQ(S3Errors::NO_SUCH_KEY, getObjectOutcome.GetError().GetErrorType());
     }
 
@@ -1180,7 +1211,7 @@ namespace
         createBucketRequest.SetACL(BucketCannedACL::private_);
         CreateBucketOutcome createBucketOutcome = Client->CreateBucket(createBucketRequest);
         ASSERT_TRUE(createBucketOutcome.IsSuccess());
-        WaitForBucketToPropagate(fullBucketName);
+        ASSERT_TRUE(WaitForBucketToPropagate(fullBucketName));
 
         PutObjectRequest putObjectRequest;
         putObjectRequest.SetBucket(fullBucketName);
@@ -1214,7 +1245,7 @@ namespace
         createBucketRequest.SetACL(BucketCannedACL::private_);
         CreateBucketOutcome createBucketOutcome = Client->CreateBucket(createBucketRequest);
         ASSERT_TRUE(createBucketOutcome.IsSuccess());
-        WaitForBucketToPropagate(fullBucketName);
+        ASSERT_TRUE(WaitForBucketToPropagate(fullBucketName));
 
         PutObjectRequest putObjectRequest;
         putObjectRequest.SetBucket(fullBucketName);
@@ -1243,7 +1274,7 @@ namespace
         CreateBucketOutcome createBucketOutcome = Client->CreateBucket(createBucketRequest);
         ASSERT_TRUE(createBucketOutcome.IsSuccess());
 
-        WaitForBucketToPropagate(fullBucketName);
+        ASSERT_TRUE(WaitForBucketToPropagate(fullBucketName));
 
         auto objectStream = Aws::MakeShared<Aws::StringStream>("BucketAndObjectOperationTest");
         *objectStream << "Test Japanese & Chinese Unicode keys";
@@ -1514,8 +1545,11 @@ namespace
 
         auto selectObjectContentOutcome = Client->SelectObjectContent(selectObjectContentRequest);
         ASSERT_FALSE(selectObjectContentOutcome.IsSuccess());
+#if ENABLE_CURL_CLIENT
+        ASSERT_FALSE(selectObjectContentOutcome.GetError().GetRemoteHostIpAddress().empty());
+#endif
+        ASSERT_FALSE(selectObjectContentOutcome.GetError().GetRequestId().empty());
         ASSERT_EQ(S3Errors::NO_SUCH_BUCKET, selectObjectContentOutcome.GetError().GetErrorType());
-
     }
 
     TEST_F(BucketAndObjectOperationTest, TestErrorsInEventStream)
@@ -1582,7 +1616,7 @@ namespace
 
         selectObjectContentRequest.SetEventStreamHandler(handler);
 
-        auto selectObjectContentOutcome = Client->SelectObjectContent(selectObjectContentRequest);
+        Client->SelectObjectContent(selectObjectContentRequest);
 
         ASSERT_TRUE(isErrorEventReceived);
     }
@@ -1653,6 +1687,37 @@ namespace
             S3Endpoint::ForAccessPointArn(S3ARN("arn:aws-us-gov:s3:us-gov-west-1:123456789120:accesspoint:endpoint"), "fips-us-gov-west-1", false).c_str());
         ASSERT_STREQ("endpoint-123456789120.s3-accesspoint.dualstack.fips-us-gov-west-1.amazonaws.com",
             S3Endpoint::ForAccessPointArn(S3ARN("arn:aws-us-gov:s3:us-gov-west-1:123456789120:accesspoint:endpoint"), "fips-us-gov-west-1", true).c_str());
+    }
+
+    TEST_F(BucketAndObjectOperationTest, TestCrossRegionOperations)
+    {
+        Aws::String fullBucketName = CalculateBucketName(BASE_CROSS_REGION_BUCKET_NAME.c_str());
+
+        CreateBucketRequest createBucketRequest;
+        createBucketRequest.SetBucket(fullBucketName);
+        CreateBucketConfiguration bucketConfiguration;
+        bucketConfiguration.SetLocationConstraint(BucketLocationConstraint::us_west_2);
+        createBucketRequest.SetCreateBucketConfiguration(bucketConfiguration);
+
+        CreateBucketOutcome createBucketOutcome = oregonClient->CreateBucket(createBucketRequest);
+        ASSERT_TRUE(createBucketOutcome.IsSuccess());
+        const CreateBucketResult& createBucketResult = createBucketOutcome.GetResult();
+        ASSERT_TRUE(!createBucketResult.GetLocation().empty());
+        WaitForBucketToPropagate(fullBucketName, oregonClient);
+
+        ListObjectsRequest listObjectsRequest;
+        listObjectsRequest.SetBucket(fullBucketName);
+        // Client in us-east-1 will not make cross-region request.
+        ListObjectsOutcome listObjectsOutcome = Client->ListObjects(listObjectsRequest);
+        ASSERT_FALSE(listObjectsOutcome.IsSuccess());
+        // Client in aws-global will make cross-region request.
+        listObjectsOutcome = globalClient->ListObjects(listObjectsRequest);
+        ASSERT_TRUE(listObjectsOutcome.IsSuccess());
+
+        DeleteBucketRequest deleteBucketRequest;
+        deleteBucketRequest.SetBucket(fullBucketName);
+        DeleteBucketOutcome deleteBucketOutcome = globalClient->DeleteBucket(deleteBucketRequest);
+        ASSERT_TRUE(deleteBucketOutcome.IsSuccess());
     }
 
 }

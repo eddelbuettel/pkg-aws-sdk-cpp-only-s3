@@ -1,17 +1,7 @@
-﻿/*
-* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License").
-* You may not use this file except in compliance with the License.
-* A copy of the License is located at
-*
-*  http://aws.amazon.com/apache2.0
-*
-* or in the "license" file accompanying this file. This file is distributed
-* on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-* express or implied. See the License for the specific language governing
-* permissions and limitations under the License.
-*/
+﻿/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
+ */
 
 #include <aws/s3/model/PutObjectLockConfigurationRequest.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
@@ -32,7 +22,6 @@ PutObjectLockConfigurationRequest::PutObjectLockConfigurationRequest() :
     m_requestPayer(RequestPayer::NOT_SET),
     m_requestPayerHasBeenSet(false),
     m_tokenHasBeenSet(false),
-    m_contentMD5HasBeenSet(false),
     m_customizedAccessLogTagHasBeenSet(false)
 {
 }
@@ -88,13 +77,6 @@ Aws::Http::HeaderValueCollection PutObjectLockConfigurationRequest::GetRequestSp
   {
     ss << m_token;
     headers.emplace("x-amz-bucket-object-lock-token",  ss.str());
-    ss.str("");
-  }
-
-  if(m_contentMD5HasBeenSet)
-  {
-    ss << m_contentMD5;
-    headers.emplace("content-md5",  ss.str());
     ss.str("");
   }
 

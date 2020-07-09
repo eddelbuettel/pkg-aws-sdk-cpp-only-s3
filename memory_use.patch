@@ -1,0 +1,11 @@
+diff --git a/aws-cpp-sdk-core/include/aws/core/SDKConfig.h b/aws-cpp-sdk-core/include/aws/core/SDKConfig.h
+index b823e75..c3c78aa 100644
+--- a/aws-cpp-sdk-core/include/aws/core/SDKConfig.h
++++ b/aws-cpp-sdk-core/include/aws/core/SDKConfig.h
+@@ -13,5 +13,5 @@
+   * permissions and limitations under the License.
+   */
+ 
+-#define USE_AWS_MEMORY_MANAGEMENT
++/* #undef USE_AWS_MEMORY_MANAGEMENT */
+ 

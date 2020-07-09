@@ -1,17 +1,7 @@
-/*
-* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License").
-* You may not use this file except in compliance with the License.
-* A copy of the License is located at
-*
-*  http://aws.amazon.com/apache2.0
-*
-* or in the "license" file accompanying this file. This file is distributed
-* on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-* express or implied. See the License for the specific language governing
-* permissions and limitations under the License.
-*/
+/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
+ */
 #pragma once
 
 #include <aws/core/utils/logging/LogLevel.h>
@@ -86,7 +76,7 @@ namespace Aws
         bool initAndCleanupCurl;
         /**
          * Installs a global SIGPIPE handler that logs the error and prevents it from terminating the current process.
-         * This can be used on operating systems on which CURL is being used. In some situations CURL cannot avoid 
+         * This can be used on operating systems on which CURL is being used. In some situations CURL cannot avoid
          * triggering a SIGPIPE.
          * For more information see: https://curl.haxx.se/libcurl/c/CURLOPT_NOSIGNAL.html
          * NOTE: CURLOPT_NOSIGNAL is already being set.
@@ -136,19 +126,19 @@ namespace Aws
         std::function<std::shared_ptr<Aws::Utils::Crypto::SecureRandomFactory>()> secureRandomFactory_create_fn;
         /**
          * OpenSSL infects everything with its global state. If it is being used then we automatically initialize and clean it up.
-         * If this is a problem for you, set this to false. Be aware that if you don't use our init and cleanup and you are using 
+         * If this is a problem for you, set this to false. Be aware that if you don't use our init and cleanup and you are using
          * crypto functionality, you are responsible for installing thread locking, and loading strings and error messages.
          */
         bool initAndCleanupOpenSSL;
     };
 
     /**
-    * MonitoringOptions is used to set up monitoring functionalities globaly and(or) for users to customize monitoring listeners.
+    * MonitoringOptions is used to set up monitoring functionalities globally and(or) for users to customize monitoring listeners.
     */
     struct MonitoringOptions
     {
         /**
-         * These factory functions will be used to try to create customized monitoring listener factories, then be used to create monitoring listener instances. 
+         * These factory functions will be used to try to create customized monitoring listener factories, then be used to create monitoring listener instances.
          * Based on functions and factory's implementation, it may fail to create an instance.
          * If a function failed to create factory or a created factory failed to create an instance, SDK just ignore it.
          * By default, SDK will try to create a default Client Side Monitoring Listener.
@@ -218,7 +208,7 @@ namespace Aws
 
         /**
          * Options used to set up customized monitoring implementations
-         * Put your monitoring facotry in a closure (a create factory function) and put all closures in a vector.
+         * Put your monitoring factory in a closure (a create factory function) and put all closures in a vector.
          * Basic usage can be found in aws-cpp-sdk-core-tests/monitoring/MonitoringTest.cpp
          */
         MonitoringOptions monitoringOptions;
@@ -270,4 +260,3 @@ namespace Aws
      */
     AWS_CORE_API void ShutdownAPI(const SDKOptions& options);
 }
-

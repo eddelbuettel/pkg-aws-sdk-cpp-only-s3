@@ -1,17 +1,7 @@
-/*
-  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License").
-  * You may not use this file except in compliance with the License.
-  * A copy of the License is located at
-  *
-  *  http://aws.amazon.com/apache2.0
-  *
-  * or in the "license" file accompanying this file. This file is distributed
-  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-  * express or implied. See the License for the specific language governing
-  * permissions and limitations under the License.
-  */
+/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
+ */
 
 #include <aws/external/gtest.h>
 #include <aws/core/http/URI.h>
@@ -216,6 +206,27 @@ TEST(URITest, TestParseWithColon)
     EXPECT_STREQ("/awsnativesdkputobjectstestbucket20150702T200059Z/TestObject:1234/awsnativesdkputobjectstestbucket20150702T200059Z/TestObject:Key", complexUri.GetPath().c_str());
     EXPECT_STREQ(strComplexUri, complexUri.GetURIString().c_str());
 
+}
+
+TEST(URITest, TestGetURLEncodedPath)
+{
+    Aws::String path = "";
+    EXPECT_STREQ("", URI::URLEncodePath(path).c_str());
+
+    path = "/";
+    EXPECT_STREQ("/", URI::URLEncodePath(path).c_str());
+
+    path = "/path/1234/";
+    EXPECT_STREQ("/path/1234/", URI::URLEncodePath(path).c_str());
+
+    path = "/path/~$omething-else";
+    EXPECT_STREQ("/path/~%24omething-else", URI::URLEncodePath(path).c_str());
+
+    path = "path/an.%ther/";
+    EXPECT_STREQ("path/an.%25ther/", URI::URLEncodePath(path).c_str());
+
+    path = "path/ሴ";
+    EXPECT_STREQ("path/%E1%88%B4", URI::URLEncodePath(path).c_str());
 }
 
 TEST(URITest, TestGetRFC3986URLEncodedPath)
