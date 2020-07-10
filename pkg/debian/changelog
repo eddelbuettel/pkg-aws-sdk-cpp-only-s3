@@ -4,6 +4,52 @@ aws-sdk-cpp-only-s3 (1.8.6-1.1804.1) bionic; urgency=medium
 
  -- Dirk Eddelbuettel <edd@debian.org>  Fri, 10 Jul 2020 12:58:59 +0000
 
+aws-sdk-cpp-only-s3 (1.7.275-1debian) unstable; urgency=medium
+
+  * Debian build of informal and unofficial package
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Fri, 06 Mar 2020 16:56:55 -0600
+
+aws-sdk-cpp-only-s3 (1.7.275-1.1804.7) bionic; urgency=medium
+
+  * debian/control: Really add libssl-dev
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sun, 23 Feb 2020 21:57:49 -0600
+
+aws-sdk-cpp-only-s3 (1.7.275-1.1804.6) bionic; urgency=medium
+
+  * debian/control: Add libssl-dev
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sun, 23 Feb 2020 21:53:11 -0600
+
+aws-sdk-cpp-only-s3 (1.7.275-1.1804.5) bionic; urgency=medium
+
+  * Correct distro name
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sun, 23 Feb 2020 21:36:09 -0600
+
+aws-sdk-cpp-only-s3 (1.7.275-1.1804.4) unstable; urgency=medium
+
+  * debian/control: Add  libcurl4-openssl-dev
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sun, 23 Feb 2020 21:32:48 -0600
+
+aws-sdk-cpp-only-s3 (1.7.275-1.1804.3) bionic; urgency=medium
+
+  * debian/control: Add libssl-dev
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sun, 23 Feb 2020 21:21:01 -0600
+
+aws-sdk-cpp-only-s3 (1.7.275-1.1804.2) bionic; urgency=medium
+
+  * debian/control: Add zlib1g-dev
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sun, 23 Feb 2020 21:09:43 -0600
+
+aws-sdk-cpp-only-s3 (1.7.275-1.1804.1) bionic; urgency=medium
+ 
+   * Informal and unofficial package
+ 
 aws-sdk-cpp-only-s3 (1.7.275-1) bionic; urgency=low
 
   * Informal and unofficial package

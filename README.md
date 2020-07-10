@@ -13,8 +13,8 @@ No changes made other than
 
 - downloading / copying all retained files _as is_ into `pkg/`
 - addition of `pkg/debian/` directory for unofficial / informal Debian packaging
+- includes one-line patch to `aws-cpp-sdk-core/include/aws/core/SDKConfig.h`
 - addition of this README.md to document the changes
-- one-line patch as documented to `aws-cpp-sdk-core/include/aws/core/SDKConfig.h`
 
 ### Usage
 
