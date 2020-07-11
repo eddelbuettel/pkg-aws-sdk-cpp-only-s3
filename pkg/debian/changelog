@@ -1,8 +1,27 @@
+aws-sdk-cpp-only-s3 (1.8.6-1.debian.1) unstable; urgency=medium
+
+  * Debian build of informal and unofficial package
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Fri, 10 Jul 2020 10:58:10 -0500
+
+aws-sdk-cpp-only-s3 (1.8.6-1.2004.2) focal; urgency=medium
+
+  * aws-cpp-sdk-core-tests/utils/crypto/SymmetricCiphersTest.cpp: Disable
+    one test on line 679
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Fri, 10 Jul 2020 10:16:41 -0500
+
+aws-sdk-cpp-only-s3 (1.8.6-1.2004.1) focal; urgency=medium
+
+  * PPA build of informal and unofficial package
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Fri, 10 Jul 2020 09:58:39 -0500
+
 aws-sdk-cpp-only-s3 (1.8.6-1.1804.1) bionic; urgency=medium
 
-  * Informal and unofficial package
+  * PPA build of informal and unofficial package
 
- -- Dirk Eddelbuettel <edd@debian.org>  Fri, 10 Jul 2020 12:58:59 +0000
+ -- Dirk Eddelbuettel <edd@debian.org>  Fri, 10 Jul 2020 09:14:03 -0500
 
 aws-sdk-cpp-only-s3 (1.7.275-1debian) unstable; urgency=medium
 
