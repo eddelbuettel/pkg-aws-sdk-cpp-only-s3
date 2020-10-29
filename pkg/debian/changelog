@@ -1,3 +1,18 @@
+aws-sdk-cpp-only-s3 (1.8.77-1.1804.1) bionic; urgency=medium
+
+  * Upstream update
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Thu, 29 Oct 2020 17:50:16 +0000
+
+aws-sdk-cpp-only-s3 (1.8.6.1-1.debian.1) unstable; urgency=medium
+
+  * aws-cpp-sdk-sts/*: Added
+  * aws-cpp-sdk-identity-management: Added
+
+  * debian/rules: Add sts and idendity-management build targets
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Thu, 15 Oct 2020 13:18:30 +0000
+
 aws-sdk-cpp-only-s3 (1.8.6-1.debian.1) unstable; urgency=medium
 
   * Debian build of informal and unofficial package
