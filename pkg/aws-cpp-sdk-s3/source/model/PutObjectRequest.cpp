@@ -53,6 +53,7 @@ PutObjectRequest::PutObjectRequest() :
     m_objectLockRetainUntilDateHasBeenSet(false),
     m_objectLockLegalHoldStatus(ObjectLockLegalHoldStatus::NOT_SET),
     m_objectLockLegalHoldStatusHasBeenSet(false),
+    m_expectedBucketOwnerHasBeenSet(false),
     m_customizedAccessLogTagHasBeenSet(false)
 {
 }
@@ -79,6 +80,7 @@ void PutObjectRequest::AddQueryStringParameters(URI& uri) const
         }
     }
 }
+
 Aws::Http::HeaderValueCollection PutObjectRequest::GetRequestSpecificHeaders() const
 {
   Aws::Http::HeaderValueCollection headers;
@@ -250,6 +252,13 @@ Aws::Http::HeaderValueCollection PutObjectRequest::GetRequestSpecificHeaders() c
   if(m_objectLockLegalHoldStatusHasBeenSet)
   {
     headers.emplace("x-amz-object-lock-legal-hold", ObjectLockLegalHoldStatusMapper::GetNameForObjectLockLegalHoldStatus(m_objectLockLegalHoldStatus));
+  }
+
+  if(m_expectedBucketOwnerHasBeenSet)
+  {
+    ss << m_expectedBucketOwner;
+    headers.emplace("x-amz-expected-bucket-owner",  ss.str());
+    ss.str("");
   }
 
   return headers;

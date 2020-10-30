@@ -38,46 +38,105 @@ namespace Model
 
     void AddQueryStringParameters(Aws::Http::URI& uri) const override;
 
+    Aws::Http::HeaderValueCollection GetRequestSpecificHeaders() const override;
+
 
     /**
-     * <p>Name of the bucket for which to get the notification configuration.</p>
+     * <p>The name of the bucket for which to get the notification configuration.</p>
      */
     inline const Aws::String& GetBucket() const{ return m_bucket; }
 
     /**
-     * <p>Name of the bucket for which to get the notification configuration.</p>
+     * <p>The name of the bucket for which to get the notification configuration.</p>
      */
     inline bool BucketHasBeenSet() const { return m_bucketHasBeenSet; }
 
     /**
-     * <p>Name of the bucket for which to get the notification configuration.</p>
+     * <p>The name of the bucket for which to get the notification configuration.</p>
      */
     inline void SetBucket(const Aws::String& value) { m_bucketHasBeenSet = true; m_bucket = value; }
 
     /**
-     * <p>Name of the bucket for which to get the notification configuration.</p>
+     * <p>The name of the bucket for which to get the notification configuration.</p>
      */
     inline void SetBucket(Aws::String&& value) { m_bucketHasBeenSet = true; m_bucket = std::move(value); }
 
     /**
-     * <p>Name of the bucket for which to get the notification configuration.</p>
+     * <p>The name of the bucket for which to get the notification configuration.</p>
      */
     inline void SetBucket(const char* value) { m_bucketHasBeenSet = true; m_bucket.assign(value); }
 
     /**
-     * <p>Name of the bucket for which to get the notification configuration.</p>
+     * <p>The name of the bucket for which to get the notification configuration.</p>
      */
     inline GetBucketNotificationConfigurationRequest& WithBucket(const Aws::String& value) { SetBucket(value); return *this;}
 
     /**
-     * <p>Name of the bucket for which to get the notification configuration.</p>
+     * <p>The name of the bucket for which to get the notification configuration.</p>
      */
     inline GetBucketNotificationConfigurationRequest& WithBucket(Aws::String&& value) { SetBucket(std::move(value)); return *this;}
 
     /**
-     * <p>Name of the bucket for which to get the notification configuration.</p>
+     * <p>The name of the bucket for which to get the notification configuration.</p>
      */
     inline GetBucketNotificationConfigurationRequest& WithBucket(const char* value) { SetBucket(value); return *this;}
+
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline const Aws::String& GetExpectedBucketOwner() const{ return m_expectedBucketOwner; }
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline bool ExpectedBucketOwnerHasBeenSet() const { return m_expectedBucketOwnerHasBeenSet; }
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline void SetExpectedBucketOwner(const Aws::String& value) { m_expectedBucketOwnerHasBeenSet = true; m_expectedBucketOwner = value; }
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline void SetExpectedBucketOwner(Aws::String&& value) { m_expectedBucketOwnerHasBeenSet = true; m_expectedBucketOwner = std::move(value); }
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline void SetExpectedBucketOwner(const char* value) { m_expectedBucketOwnerHasBeenSet = true; m_expectedBucketOwner.assign(value); }
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline GetBucketNotificationConfigurationRequest& WithExpectedBucketOwner(const Aws::String& value) { SetExpectedBucketOwner(value); return *this;}
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline GetBucketNotificationConfigurationRequest& WithExpectedBucketOwner(Aws::String&& value) { SetExpectedBucketOwner(std::move(value)); return *this;}
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline GetBucketNotificationConfigurationRequest& WithExpectedBucketOwner(const char* value) { SetExpectedBucketOwner(value); return *this;}
 
 
     
@@ -123,6 +182,9 @@ namespace Model
 
     Aws::String m_bucket;
     bool m_bucketHasBeenSet;
+
+    Aws::String m_expectedBucketOwner;
+    bool m_expectedBucketOwnerHasBeenSet;
 
     Aws::Map<Aws::String, Aws::String> m_customizedAccessLogTag;
     bool m_customizedAccessLogTagHasBeenSet;

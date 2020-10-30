@@ -103,7 +103,7 @@ namespace Model
      * true), you can use the key name in this field as marker in the subsequent
      * request to get next set of objects. Amazon S3 lists objects in alphabetical
      * order Note: This element is returned only if you have delimiter request
-     * parameter specified. If response does not include the NextMaker and it is
+     * parameter specified. If response does not include the NextMarker and it is
      * truncated, you can use the value of the last Key in the response as the marker
      * in the subsequent request to get the next set of object keys.</p>
      */
@@ -114,7 +114,7 @@ namespace Model
      * true), you can use the key name in this field as marker in the subsequent
      * request to get next set of objects. Amazon S3 lists objects in alphabetical
      * order Note: This element is returned only if you have delimiter request
-     * parameter specified. If response does not include the NextMaker and it is
+     * parameter specified. If response does not include the NextMarker and it is
      * truncated, you can use the value of the last Key in the response as the marker
      * in the subsequent request to get the next set of object keys.</p>
      */
@@ -125,7 +125,7 @@ namespace Model
      * true), you can use the key name in this field as marker in the subsequent
      * request to get next set of objects. Amazon S3 lists objects in alphabetical
      * order Note: This element is returned only if you have delimiter request
-     * parameter specified. If response does not include the NextMaker and it is
+     * parameter specified. If response does not include the NextMarker and it is
      * truncated, you can use the value of the last Key in the response as the marker
      * in the subsequent request to get the next set of object keys.</p>
      */
@@ -136,7 +136,7 @@ namespace Model
      * true), you can use the key name in this field as marker in the subsequent
      * request to get next set of objects. Amazon S3 lists objects in alphabetical
      * order Note: This element is returned only if you have delimiter request
-     * parameter specified. If response does not include the NextMaker and it is
+     * parameter specified. If response does not include the NextMarker and it is
      * truncated, you can use the value of the last Key in the response as the marker
      * in the subsequent request to get the next set of object keys.</p>
      */
@@ -147,7 +147,7 @@ namespace Model
      * true), you can use the key name in this field as marker in the subsequent
      * request to get next set of objects. Amazon S3 lists objects in alphabetical
      * order Note: This element is returned only if you have delimiter request
-     * parameter specified. If response does not include the NextMaker and it is
+     * parameter specified. If response does not include the NextMarker and it is
      * truncated, you can use the value of the last Key in the response as the marker
      * in the subsequent request to get the next set of object keys.</p>
      */
@@ -158,7 +158,7 @@ namespace Model
      * true), you can use the key name in this field as marker in the subsequent
      * request to get next set of objects. Amazon S3 lists objects in alphabetical
      * order Note: This element is returned only if you have delimiter request
-     * parameter specified. If response does not include the NextMaker and it is
+     * parameter specified. If response does not include the NextMarker and it is
      * truncated, you can use the value of the last Key in the response as the marker
      * in the subsequent request to get the next set of object keys.</p>
      */
@@ -169,7 +169,7 @@ namespace Model
      * true), you can use the key name in this field as marker in the subsequent
      * request to get next set of objects. Amazon S3 lists objects in alphabetical
      * order Note: This element is returned only if you have delimiter request
-     * parameter specified. If response does not include the NextMaker and it is
+     * parameter specified. If response does not include the NextMarker and it is
      * truncated, you can use the value of the last Key in the response as the marker
      * in the subsequent request to get the next set of object keys.</p>
      */
@@ -213,37 +213,37 @@ namespace Model
 
 
     /**
-     * <p>Bucket name.</p>
+     * <p>The bucket name.</p>
      */
     inline const Aws::String& GetName() const{ return m_name; }
 
     /**
-     * <p>Bucket name.</p>
+     * <p>The bucket name.</p>
      */
     inline void SetName(const Aws::String& value) { m_name = value; }
 
     /**
-     * <p>Bucket name.</p>
+     * <p>The bucket name.</p>
      */
     inline void SetName(Aws::String&& value) { m_name = std::move(value); }
 
     /**
-     * <p>Bucket name.</p>
+     * <p>The bucket name.</p>
      */
     inline void SetName(const char* value) { m_name.assign(value); }
 
     /**
-     * <p>Bucket name.</p>
+     * <p>The bucket name.</p>
      */
     inline ListObjectsResult& WithName(const Aws::String& value) { SetName(value); return *this;}
 
     /**
-     * <p>Bucket name.</p>
+     * <p>The bucket name.</p>
      */
     inline ListObjectsResult& WithName(Aws::String&& value) { SetName(std::move(value)); return *this;}
 
     /**
-     * <p>Bucket name.</p>
+     * <p>The bucket name.</p>
      */
     inline ListObjectsResult& WithName(const char* value) { SetName(value); return *this;}
 

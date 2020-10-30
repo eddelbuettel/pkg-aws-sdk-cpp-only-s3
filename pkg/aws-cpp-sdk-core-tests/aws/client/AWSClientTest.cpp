@@ -143,7 +143,6 @@ protected:
         SaveEnvironmentVariable("AWS_PROFILE");
         SaveEnvironmentVariable("AWS_DEFAULT_REGION");
         SaveEnvironmentVariable("AWS_REGION");
-        SaveEnvironmentVariable("AWS_EC2_METADATA_DISABLED");
 
         Aws::StringStream ss;
         ss << Aws::Auth::GetConfigProfileFilename() + "_blah" << std::this_thread::get_id();
@@ -186,6 +185,15 @@ protected:
     Aws::Vector<std::pair<const char*, Aws::String>> m_environment;
     Aws::String m_configFileName;
 };
+
+TEST_F(AWSClientTestSuite, TestValidateInvalidURI)
+{
+    const Aws::Http::URI uri("-west-3.domain.com/something");
+    AmazonWebServiceRequestMock request;
+    auto outcome = client->MakeRequest(uri, request);
+    ASSERT_FALSE(outcome.IsSuccess());
+    ASSERT_EQ(CoreErrors::VALIDATION, outcome.GetError().GetErrorType());
+}
 
 TEST_F(AWSClientTestSuite, TestClockSkewOutsideAcceptableRange)
 {
@@ -315,6 +323,25 @@ TEST_F(AWSClientTestSuite, TestRetryHeaders)
     ASSERT_GT(diff, std::chrono::seconds(-2));
     ASSERT_STREQ("3", ExtractFromRequestInfo(requestInfo, "attempt").c_str());
     ASSERT_STREQ("11", ExtractFromRequestInfo(requestInfo, "max").c_str());
+}
+
+TEST_F(AWSClientTestSuite, TestRetryURIs)
+{
+    HeaderValueCollection responseHeaders;
+    responseHeaders.emplace("Date", (DateTime::Now() + std::chrono::hours(1)).ToGmtString(DateFormat::RFC822)); // server is ahead of us by 1 hour
+    QueueMockResponse(HttpResponseCode::INTERNAL_SERVER_ERROR, responseHeaders);
+    QueueMockResponse(HttpResponseCode::INTERNAL_SERVER_ERROR, responseHeaders);
+    URI uri("http://www.uri.com/path with space/to/res");
+    AmazonWebServiceRequestMock request;
+    auto outcome = client->MakeRequest(uri, request);
+    ASSERT_FALSE(outcome.IsSuccess());
+    ASSERT_EQ(1, client->GetRequestAttemptedRetries());
+    const auto& requests = mockHttpClient->GetAllRequestsMade();
+    ASSERT_EQ(2u, requests.size());
+    // Let's make sure the URIs for each attempt of retries are identical.
+    // Especially when we have escape characters in the path: we will not encode the path here, instead, the underlying HTTP client will do that.
+    ASSERT_EQ(uri, requests[0].GetUri());
+    ASSERT_EQ(uri, requests[1].GetUri());
 }
 
 TEST_F(AWSClientTestSuite, TestStandardRetryStrategy)
@@ -516,8 +543,6 @@ TEST(AWSClientTest, TestOverflowContainer)
 TEST_F(AWSConfigTestSuite, TestClientConfigurationWithNonExistentProfile)
 {
     // create a config file with profile named Dijkstra
-    Aws::Environment::SetEnv("AWS_EC2_METADATA_DISABLED", "true", 1);
-
     Aws::OFStream configFileNew(m_configFileName.c_str(), Aws::OFStream::out | Aws::OFStream::trunc);
     configFileNew << "[Dijkstra]" << std::endl;
     configFileNew << "region = " << Aws::Region::US_WEST_2 << std::endl;
@@ -537,7 +562,6 @@ TEST_F(AWSConfigTestSuite, TestClientConfigurationWithNonExistentProfile)
 TEST_F(AWSConfigTestSuite, TestClientConfigurationWithNonExistentConfigFile)
 {
     Aws::Environment::SetEnv("AWS_CONFIG_FILE", "WhatAreTheChances", 1/*overwrite*/);
-    Aws::Environment::SetEnv("AWS_EC2_METADATA_DISABLED", "true", 1);
     Aws::Config::ReloadCachedConfigFile();
 
     Aws::Client::ClientConfiguration config("default");
@@ -675,6 +699,8 @@ TEST_F(AWSRegionTest, TestResolveRegionFromEC2InstanceMetadata)
 
     Aws::Environment::UnSetEnv("AWS_DEFAULT_REGION");
     Aws::Environment::UnSetEnv("AWS_REGION");
+    // We set AWS_EC2_METADATA_DISABLED=true Aws::Testing::InitPlatformTest, we need to set it to false explicitly for this test.
+    Aws::Environment::UnSetEnv("AWS_EC2_METADATA_DISABLED");
     Aws::OFStream configFile(m_configFileName.c_str(), Aws::OFStream::out | Aws::OFStream::trunc);
     configFile << "[default]" << std::endl;
     configFile.close();
@@ -708,7 +734,6 @@ TEST_F(AWSRegionTest, TestResolveDefaultRegion)
 {
     Aws::Environment::UnSetEnv("AWS_DEFAULT_REGION");
     Aws::Environment::UnSetEnv("AWS_REGION");
-    Aws::Environment::SetEnv("AWS_EC2_METADATA_DISABLED", "true", 1);
     Aws::OFStream configFile(m_configFileName.c_str(), Aws::OFStream::out | Aws::OFStream::trunc);
     configFile << "[default]" << std::endl;
     configFile.close();

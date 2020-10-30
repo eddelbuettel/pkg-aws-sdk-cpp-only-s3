@@ -51,9 +51,9 @@ namespace Model
      * you must direct requests to the access point hostname. The access point hostname
      * takes the form
      * <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com.
-     * When using this operation using an access point through the AWS SDKs, you
-     * provide the access point ARN in place of the bucket name. For more information
-     * about access point ARNs, see <a
+     * When using this operation with an access point through the AWS SDKs, you provide
+     * the access point ARN in place of the bucket name. For more information about
+     * access point ARNs, see <a
      * href="https://docs.aws.amazon.com/AmazonS3/latest/dev/using-access-points.html">Using
      * Access Points</a> in the <i>Amazon Simple Storage Service Developer
      * Guide</i>.</p>
@@ -66,9 +66,9 @@ namespace Model
      * you must direct requests to the access point hostname. The access point hostname
      * takes the form
      * <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com.
-     * When using this operation using an access point through the AWS SDKs, you
-     * provide the access point ARN in place of the bucket name. For more information
-     * about access point ARNs, see <a
+     * When using this operation with an access point through the AWS SDKs, you provide
+     * the access point ARN in place of the bucket name. For more information about
+     * access point ARNs, see <a
      * href="https://docs.aws.amazon.com/AmazonS3/latest/dev/using-access-points.html">Using
      * Access Points</a> in the <i>Amazon Simple Storage Service Developer
      * Guide</i>.</p>
@@ -81,9 +81,9 @@ namespace Model
      * you must direct requests to the access point hostname. The access point hostname
      * takes the form
      * <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com.
-     * When using this operation using an access point through the AWS SDKs, you
-     * provide the access point ARN in place of the bucket name. For more information
-     * about access point ARNs, see <a
+     * When using this operation with an access point through the AWS SDKs, you provide
+     * the access point ARN in place of the bucket name. For more information about
+     * access point ARNs, see <a
      * href="https://docs.aws.amazon.com/AmazonS3/latest/dev/using-access-points.html">Using
      * Access Points</a> in the <i>Amazon Simple Storage Service Developer
      * Guide</i>.</p>
@@ -96,9 +96,9 @@ namespace Model
      * you must direct requests to the access point hostname. The access point hostname
      * takes the form
      * <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com.
-     * When using this operation using an access point through the AWS SDKs, you
-     * provide the access point ARN in place of the bucket name. For more information
-     * about access point ARNs, see <a
+     * When using this operation with an access point through the AWS SDKs, you provide
+     * the access point ARN in place of the bucket name. For more information about
+     * access point ARNs, see <a
      * href="https://docs.aws.amazon.com/AmazonS3/latest/dev/using-access-points.html">Using
      * Access Points</a> in the <i>Amazon Simple Storage Service Developer
      * Guide</i>.</p>
@@ -111,9 +111,9 @@ namespace Model
      * you must direct requests to the access point hostname. The access point hostname
      * takes the form
      * <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com.
-     * When using this operation using an access point through the AWS SDKs, you
-     * provide the access point ARN in place of the bucket name. For more information
-     * about access point ARNs, see <a
+     * When using this operation with an access point through the AWS SDKs, you provide
+     * the access point ARN in place of the bucket name. For more information about
+     * access point ARNs, see <a
      * href="https://docs.aws.amazon.com/AmazonS3/latest/dev/using-access-points.html">Using
      * Access Points</a> in the <i>Amazon Simple Storage Service Developer
      * Guide</i>.</p>
@@ -126,9 +126,9 @@ namespace Model
      * you must direct requests to the access point hostname. The access point hostname
      * takes the form
      * <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com.
-     * When using this operation using an access point through the AWS SDKs, you
-     * provide the access point ARN in place of the bucket name. For more information
-     * about access point ARNs, see <a
+     * When using this operation with an access point through the AWS SDKs, you provide
+     * the access point ARN in place of the bucket name. For more information about
+     * access point ARNs, see <a
      * href="https://docs.aws.amazon.com/AmazonS3/latest/dev/using-access-points.html">Using
      * Access Points</a> in the <i>Amazon Simple Storage Service Developer
      * Guide</i>.</p>
@@ -141,9 +141,9 @@ namespace Model
      * you must direct requests to the access point hostname. The access point hostname
      * takes the form
      * <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com.
-     * When using this operation using an access point through the AWS SDKs, you
-     * provide the access point ARN in place of the bucket name. For more information
-     * about access point ARNs, see <a
+     * When using this operation with an access point through the AWS SDKs, you provide
+     * the access point ARN in place of the bucket name. For more information about
+     * access point ARNs, see <a
      * href="https://docs.aws.amazon.com/AmazonS3/latest/dev/using-access-points.html">Using
      * Access Points</a> in the <i>Amazon Simple Storage Service Developer
      * Guide</i>.</p>
@@ -156,9 +156,9 @@ namespace Model
      * you must direct requests to the access point hostname. The access point hostname
      * takes the form
      * <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com.
-     * When using this operation using an access point through the AWS SDKs, you
-     * provide the access point ARN in place of the bucket name. For more information
-     * about access point ARNs, see <a
+     * When using this operation with an access point through the AWS SDKs, you provide
+     * the access point ARN in place of the bucket name. For more information about
+     * access point ARNs, see <a
      * href="https://docs.aws.amazon.com/AmazonS3/latest/dev/using-access-points.html">Using
      * Access Points</a> in the <i>Amazon Simple Storage Service Developer
      * Guide</i>.</p>
@@ -339,6 +339,63 @@ namespace Model
     inline PutObjectRetentionRequest& WithBypassGovernanceRetention(bool value) { SetBypassGovernanceRetention(value); return *this;}
 
 
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline const Aws::String& GetExpectedBucketOwner() const{ return m_expectedBucketOwner; }
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline bool ExpectedBucketOwnerHasBeenSet() const { return m_expectedBucketOwnerHasBeenSet; }
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline void SetExpectedBucketOwner(const Aws::String& value) { m_expectedBucketOwnerHasBeenSet = true; m_expectedBucketOwner = value; }
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline void SetExpectedBucketOwner(Aws::String&& value) { m_expectedBucketOwnerHasBeenSet = true; m_expectedBucketOwner = std::move(value); }
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline void SetExpectedBucketOwner(const char* value) { m_expectedBucketOwnerHasBeenSet = true; m_expectedBucketOwner.assign(value); }
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline PutObjectRetentionRequest& WithExpectedBucketOwner(const Aws::String& value) { SetExpectedBucketOwner(value); return *this;}
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline PutObjectRetentionRequest& WithExpectedBucketOwner(Aws::String&& value) { SetExpectedBucketOwner(std::move(value)); return *this;}
+
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
+    inline PutObjectRetentionRequest& WithExpectedBucketOwner(const char* value) { SetExpectedBucketOwner(value); return *this;}
+
+
     
     inline const Aws::Map<Aws::String, Aws::String>& GetCustomizedAccessLogTag() const{ return m_customizedAccessLogTag; }
 
@@ -397,6 +454,9 @@ namespace Model
 
     bool m_bypassGovernanceRetention;
     bool m_bypassGovernanceRetentionHasBeenSet;
+
+    Aws::String m_expectedBucketOwner;
+    bool m_expectedBucketOwnerHasBeenSet;
 
     Aws::Map<Aws::String, Aws::String> m_customizedAccessLogTag;
     bool m_customizedAccessLogTagHasBeenSet;
