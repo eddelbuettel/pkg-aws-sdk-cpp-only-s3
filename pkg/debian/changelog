@@ -2,6 +2,9 @@ aws-sdk-cpp-only-s3 (1.8.77-1.1804.1) bionic; urgency=medium
 
   * Upstream update
 
+  * debian/rules: Small tweak to CMake options
+  * debian/patches/series: Uncomment 'skip_on_crypto assert'
+
  -- Dirk Eddelbuettel <edd@debian.org>  Thu, 29 Oct 2020 17:50:16 +0000
 
 aws-sdk-cpp-only-s3 (1.8.6.1-1.debian.1) unstable; urgency=medium
