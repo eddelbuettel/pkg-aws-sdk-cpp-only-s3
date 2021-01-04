@@ -1,3 +1,9 @@
+aws-sdk-cpp-only-s3 (1.8.117-1.1804.1) bionic; urgency=medium
+
+  * Upstream update
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Mon, 04 Jan 2021 15:48:40 +0000
+
 aws-sdk-cpp-only-s3 (1.8.77-1.1804.1) bionic; urgency=medium
 
   * Upstream update

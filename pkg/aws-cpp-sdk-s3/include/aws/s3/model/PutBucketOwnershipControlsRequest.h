@@ -41,6 +41,8 @@ namespace Model
 
     Aws::Http::HeaderValueCollection GetRequestSpecificHeaders() const override;
 
+    inline bool ShouldComputeContentMd5() const override { return true; }
+
 
     /**
      * <p>The name of the Amazon S3 bucket whose <code>OwnershipControls</code> you
@@ -92,68 +94,116 @@ namespace Model
 
 
     /**
-     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p>
+     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p> <p>For
+     * requests made using the AWS Command Line Interface (CLI) or AWS SDKs, this field
+     * is calculated automatically.</p>
      */
     inline const Aws::String& GetContentMD5() const{ return m_contentMD5; }
 
     /**
-     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p>
+     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p> <p>For
+     * requests made using the AWS Command Line Interface (CLI) or AWS SDKs, this field
+     * is calculated automatically.</p>
      */
     inline bool ContentMD5HasBeenSet() const { return m_contentMD5HasBeenSet; }
 
     /**
-     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p>
+     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p> <p>For
+     * requests made using the AWS Command Line Interface (CLI) or AWS SDKs, this field
+     * is calculated automatically.</p>
      */
     inline void SetContentMD5(const Aws::String& value) { m_contentMD5HasBeenSet = true; m_contentMD5 = value; }
 
     /**
-     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p>
+     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p> <p>For
+     * requests made using the AWS Command Line Interface (CLI) or AWS SDKs, this field
+     * is calculated automatically.</p>
      */
     inline void SetContentMD5(Aws::String&& value) { m_contentMD5HasBeenSet = true; m_contentMD5 = std::move(value); }
 
     /**
-     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p>
+     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p> <p>For
+     * requests made using the AWS Command Line Interface (CLI) or AWS SDKs, this field
+     * is calculated automatically.</p>
      */
     inline void SetContentMD5(const char* value) { m_contentMD5HasBeenSet = true; m_contentMD5.assign(value); }
 
     /**
-     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p>
+     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p> <p>For
+     * requests made using the AWS Command Line Interface (CLI) or AWS SDKs, this field
+     * is calculated automatically.</p>
      */
     inline PutBucketOwnershipControlsRequest& WithContentMD5(const Aws::String& value) { SetContentMD5(value); return *this;}
 
     /**
-     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p>
+     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p> <p>For
+     * requests made using the AWS Command Line Interface (CLI) or AWS SDKs, this field
+     * is calculated automatically.</p>
      */
     inline PutBucketOwnershipControlsRequest& WithContentMD5(Aws::String&& value) { SetContentMD5(std::move(value)); return *this;}
 
     /**
-     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p>
+     * <p>The MD5 hash of the <code>OwnershipControls</code> request body. </p> <p>For
+     * requests made using the AWS Command Line Interface (CLI) or AWS SDKs, this field
+     * is calculated automatically.</p>
      */
     inline PutBucketOwnershipControlsRequest& WithContentMD5(const char* value) { SetContentMD5(value); return *this;}
 
 
-    
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
     inline const Aws::String& GetExpectedBucketOwner() const{ return m_expectedBucketOwner; }
 
-    
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
     inline bool ExpectedBucketOwnerHasBeenSet() const { return m_expectedBucketOwnerHasBeenSet; }
 
-    
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
     inline void SetExpectedBucketOwner(const Aws::String& value) { m_expectedBucketOwnerHasBeenSet = true; m_expectedBucketOwner = value; }
 
-    
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
     inline void SetExpectedBucketOwner(Aws::String&& value) { m_expectedBucketOwnerHasBeenSet = true; m_expectedBucketOwner = std::move(value); }
 
-    
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
     inline void SetExpectedBucketOwner(const char* value) { m_expectedBucketOwnerHasBeenSet = true; m_expectedBucketOwner.assign(value); }
 
-    
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
     inline PutBucketOwnershipControlsRequest& WithExpectedBucketOwner(const Aws::String& value) { SetExpectedBucketOwner(value); return *this;}
 
-    
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
     inline PutBucketOwnershipControlsRequest& WithExpectedBucketOwner(Aws::String&& value) { SetExpectedBucketOwner(std::move(value)); return *this;}
 
-    
+    /**
+     * <p>The account id of the expected bucket owner. If the bucket is owned by a
+     * different account, the request will fail with an HTTP <code>403 (Access
+     * Denied)</code> error.</p>
+     */
     inline PutBucketOwnershipControlsRequest& WithExpectedBucketOwner(const char* value) { SetExpectedBucketOwner(value); return *this;}
 
 

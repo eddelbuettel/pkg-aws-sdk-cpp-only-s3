@@ -18,9 +18,11 @@ using namespace Aws;
 
 HeadObjectResult::HeadObjectResult() : 
     m_deleteMarker(false),
+    m_archiveStatus(ArchiveStatus::NOT_SET),
     m_contentLength(0),
     m_missingMeta(0),
     m_serverSideEncryption(ServerSideEncryption::NOT_SET),
+    m_bucketKeyEnabled(false),
     m_storageClass(StorageClass::NOT_SET),
     m_requestCharged(RequestCharged::NOT_SET),
     m_replicationStatus(ReplicationStatus::NOT_SET),
@@ -32,9 +34,11 @@ HeadObjectResult::HeadObjectResult() :
 
 HeadObjectResult::HeadObjectResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
     m_deleteMarker(false),
+    m_archiveStatus(ArchiveStatus::NOT_SET),
     m_contentLength(0),
     m_missingMeta(0),
     m_serverSideEncryption(ServerSideEncryption::NOT_SET),
+    m_bucketKeyEnabled(false),
     m_storageClass(StorageClass::NOT_SET),
     m_requestCharged(RequestCharged::NOT_SET),
     m_replicationStatus(ReplicationStatus::NOT_SET),
@@ -77,6 +81,12 @@ HeadObjectResult& HeadObjectResult::operator =(const Aws::AmazonWebServiceResult
   if(restoreIter != headers.end())
   {
     m_restore = restoreIter->second;
+  }
+
+  const auto& archiveStatusIter = headers.find("x-amz-archive-status");
+  if(archiveStatusIter != headers.end())
+  {
+    m_archiveStatus = ArchiveStatusMapper::GetArchiveStatusForName(archiveStatusIter->second);
   }
 
   const auto& lastModifiedIter = headers.find("last-modified");
@@ -184,6 +194,12 @@ HeadObjectResult& HeadObjectResult::operator =(const Aws::AmazonWebServiceResult
   if(sSEKMSKeyIdIter != headers.end())
   {
     m_sSEKMSKeyId = sSEKMSKeyIdIter->second;
+  }
+
+  const auto& bucketKeyEnabledIter = headers.find("x-amz-server-side-encryption-bucket-key-enabled");
+  if(bucketKeyEnabledIter != headers.end())
+  {
+     m_bucketKeyEnabled = StringUtils::ConvertToBool(bucketKeyEnabledIter->second.c_str());
   }
 
   const auto& storageClassIter = headers.find("x-amz-storage-class");

@@ -85,6 +85,87 @@ namespace Model
     inline PutBucketReplicationRequest& WithBucket(const char* value) { SetBucket(value); return *this;}
 
 
+    /**
+     * <p>The base64-encoded 128-bit MD5 digest of the data. You must use this header
+     * as a message integrity check to verify that the request body was not corrupted
+     * in transit. For more information, see <a
+     * href="http://www.ietf.org/rfc/rfc1864.txt">RFC 1864</a>.</p> <p>For requests
+     * made using the AWS Command Line Interface (CLI) or AWS SDKs, this field is
+     * calculated automatically.</p>
+     */
+    inline const Aws::String& GetContentMD5() const{ return m_contentMD5; }
+
+    /**
+     * <p>The base64-encoded 128-bit MD5 digest of the data. You must use this header
+     * as a message integrity check to verify that the request body was not corrupted
+     * in transit. For more information, see <a
+     * href="http://www.ietf.org/rfc/rfc1864.txt">RFC 1864</a>.</p> <p>For requests
+     * made using the AWS Command Line Interface (CLI) or AWS SDKs, this field is
+     * calculated automatically.</p>
+     */
+    inline bool ContentMD5HasBeenSet() const { return m_contentMD5HasBeenSet; }
+
+    /**
+     * <p>The base64-encoded 128-bit MD5 digest of the data. You must use this header
+     * as a message integrity check to verify that the request body was not corrupted
+     * in transit. For more information, see <a
+     * href="http://www.ietf.org/rfc/rfc1864.txt">RFC 1864</a>.</p> <p>For requests
+     * made using the AWS Command Line Interface (CLI) or AWS SDKs, this field is
+     * calculated automatically.</p>
+     */
+    inline void SetContentMD5(const Aws::String& value) { m_contentMD5HasBeenSet = true; m_contentMD5 = value; }
+
+    /**
+     * <p>The base64-encoded 128-bit MD5 digest of the data. You must use this header
+     * as a message integrity check to verify that the request body was not corrupted
+     * in transit. For more information, see <a
+     * href="http://www.ietf.org/rfc/rfc1864.txt">RFC 1864</a>.</p> <p>For requests
+     * made using the AWS Command Line Interface (CLI) or AWS SDKs, this field is
+     * calculated automatically.</p>
+     */
+    inline void SetContentMD5(Aws::String&& value) { m_contentMD5HasBeenSet = true; m_contentMD5 = std::move(value); }
+
+    /**
+     * <p>The base64-encoded 128-bit MD5 digest of the data. You must use this header
+     * as a message integrity check to verify that the request body was not corrupted
+     * in transit. For more information, see <a
+     * href="http://www.ietf.org/rfc/rfc1864.txt">RFC 1864</a>.</p> <p>For requests
+     * made using the AWS Command Line Interface (CLI) or AWS SDKs, this field is
+     * calculated automatically.</p>
+     */
+    inline void SetContentMD5(const char* value) { m_contentMD5HasBeenSet = true; m_contentMD5.assign(value); }
+
+    /**
+     * <p>The base64-encoded 128-bit MD5 digest of the data. You must use this header
+     * as a message integrity check to verify that the request body was not corrupted
+     * in transit. For more information, see <a
+     * href="http://www.ietf.org/rfc/rfc1864.txt">RFC 1864</a>.</p> <p>For requests
+     * made using the AWS Command Line Interface (CLI) or AWS SDKs, this field is
+     * calculated automatically.</p>
+     */
+    inline PutBucketReplicationRequest& WithContentMD5(const Aws::String& value) { SetContentMD5(value); return *this;}
+
+    /**
+     * <p>The base64-encoded 128-bit MD5 digest of the data. You must use this header
+     * as a message integrity check to verify that the request body was not corrupted
+     * in transit. For more information, see <a
+     * href="http://www.ietf.org/rfc/rfc1864.txt">RFC 1864</a>.</p> <p>For requests
+     * made using the AWS Command Line Interface (CLI) or AWS SDKs, this field is
+     * calculated automatically.</p>
+     */
+    inline PutBucketReplicationRequest& WithContentMD5(Aws::String&& value) { SetContentMD5(std::move(value)); return *this;}
+
+    /**
+     * <p>The base64-encoded 128-bit MD5 digest of the data. You must use this header
+     * as a message integrity check to verify that the request body was not corrupted
+     * in transit. For more information, see <a
+     * href="http://www.ietf.org/rfc/rfc1864.txt">RFC 1864</a>.</p> <p>For requests
+     * made using the AWS Command Line Interface (CLI) or AWS SDKs, this field is
+     * calculated automatically.</p>
+     */
+    inline PutBucketReplicationRequest& WithContentMD5(const char* value) { SetContentMD5(value); return *this;}
+
+
     
     inline const ReplicationConfiguration& GetReplicationConfiguration() const{ return m_replicationConfiguration; }
 
@@ -105,42 +186,42 @@ namespace Model
 
 
     /**
-     * <p/>
+     * <p>A token to allow Object Lock to be enabled for an existing bucket.</p>
      */
     inline const Aws::String& GetToken() const{ return m_token; }
 
     /**
-     * <p/>
+     * <p>A token to allow Object Lock to be enabled for an existing bucket.</p>
      */
     inline bool TokenHasBeenSet() const { return m_tokenHasBeenSet; }
 
     /**
-     * <p/>
+     * <p>A token to allow Object Lock to be enabled for an existing bucket.</p>
      */
     inline void SetToken(const Aws::String& value) { m_tokenHasBeenSet = true; m_token = value; }
 
     /**
-     * <p/>
+     * <p>A token to allow Object Lock to be enabled for an existing bucket.</p>
      */
     inline void SetToken(Aws::String&& value) { m_tokenHasBeenSet = true; m_token = std::move(value); }
 
     /**
-     * <p/>
+     * <p>A token to allow Object Lock to be enabled for an existing bucket.</p>
      */
     inline void SetToken(const char* value) { m_tokenHasBeenSet = true; m_token.assign(value); }
 
     /**
-     * <p/>
+     * <p>A token to allow Object Lock to be enabled for an existing bucket.</p>
      */
     inline PutBucketReplicationRequest& WithToken(const Aws::String& value) { SetToken(value); return *this;}
 
     /**
-     * <p/>
+     * <p>A token to allow Object Lock to be enabled for an existing bucket.</p>
      */
     inline PutBucketReplicationRequest& WithToken(Aws::String&& value) { SetToken(std::move(value)); return *this;}
 
     /**
-     * <p/>
+     * <p>A token to allow Object Lock to be enabled for an existing bucket.</p>
      */
     inline PutBucketReplicationRequest& WithToken(const char* value) { SetToken(value); return *this;}
 
@@ -245,6 +326,9 @@ namespace Model
 
     Aws::String m_bucket;
     bool m_bucketHasBeenSet;
+
+    Aws::String m_contentMD5;
+    bool m_contentMD5HasBeenSet;
 
     ReplicationConfiguration m_replicationConfiguration;
     bool m_replicationConfigurationHasBeenSet;
