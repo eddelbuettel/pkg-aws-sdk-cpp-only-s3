@@ -22,7 +22,7 @@ No changes made other than
 Create yourself a `.orig.tar.gz` and use it with `dpkg-buildpackage` as for example via 
 
 ```sh
-tar cvz --exclude=.git --exclude=debian --file aws-sdk-cpp-only-s3_1.8.77.orig.tar.gz pkg
+tar cvz --exclude=.git --exclude=debian --file aws-sdk-cpp-only-s3_1.8.117.orig.tar.gz pkg
 cd pkg && dpkg-buildpackage -rfakeroot -us -uc -tc
 ```
 

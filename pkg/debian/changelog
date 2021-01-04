@@ -1,8 +1,35 @@
+aws-sdk-cpp-only-s3 (1.8.117-1.debian.1) unstable; urgency=medium
+
+  * Debian build of informal and unofficial package
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Mon, 04 Jan 2021 13:35:23 -0600
+
+aws-sdk-cpp-only-s3 (1.8.117-1.2004.1) focal; urgency=medium
+
+  * Upstream update
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Mon, 04 Jan 2021 12:23:25 -0600
+
 aws-sdk-cpp-only-s3 (1.8.117-1.1804.1) bionic; urgency=medium
 
   * Upstream update
 
  -- Dirk Eddelbuettel <edd@debian.org>  Mon, 04 Jan 2021 15:48:40 +0000
+
+aws-sdk-cpp-only-s3 (1.8.77-1.debian.1) unstable; urgency=medium
+
+  * Debian build of informal and unofficial package
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Mon, 02 Nov 2020 11:31:35 -0600
+
+aws-sdk-cpp-only-s3 (1.8.77-1.2004.1) focal; urgency=medium
+
+  * Upstream update
+
+  * debian/rules: Small tweak to CMake options
+  * debian/patches/series: Uncomment 'skip_on_crypto assert'
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sat, 31 Oct 2020 19:03:20 -0500
 
 aws-sdk-cpp-only-s3 (1.8.77-1.1804.1) bionic; urgency=medium
 
