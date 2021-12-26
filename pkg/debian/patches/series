@@ -1,3 +1,5 @@
 #skip_one_crypto_assert
 cmake_322_support
 allow_Werror
+set-usr-as-default-location-for-SDK
+comment-out-thread-test-portion

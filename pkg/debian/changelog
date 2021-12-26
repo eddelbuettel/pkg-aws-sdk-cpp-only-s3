@@ -1,3 +1,14 @@
+aws-sdk-cpp-only-s3 (1.8.117-3.debian.1) unstable; urgency=medium
+
+  * cmake/AWSSDKConfig.cmake: Set AWSSDK_ROOT_DIR to "/usr" to permit
+    easier / more failsafe use
+
+  * aws-cpp-sdk-identity-management-tests/auth/STSAssumeRoleCredentialsProviderTest.cpp:
+    comment-out one 'sleep_for' for not being member of 'std::this_thread' and
+    comment-out subsequent tests in context
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sun, 26 Dec 2021 12:42:24 -0600
+
 aws-sdk-cpp-only-s3 (1.8.117-2.debian.1) unstable; urgency=medium
 
   * cmake/AWSSDKConfig.cmake: Apply patch to cmake configuration to

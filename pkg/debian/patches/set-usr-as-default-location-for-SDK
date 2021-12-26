@@ -1,0 +1,27 @@
+Description: Use of the SDK package needs to ensure /usr location
+ In several use cases setting the environment variable AWSSDK_ROOT_DIR 
+ has been seen as 'good enough' but when the packages are used in 
+ another Debian build it was seen as failing so we now just set it directly
+ which is defensible as the package is for local package use 
+ .
+ aws-sdk-cpp-only-s3 (1.8.117-3.debian.2) unstable; urgency=medium
+ .
+   * cmake/AWSSDKConfig.cmake: Set AWSSDK_ROOT_DIR to "/usr" to permit
+     easier / more failsafe use
+Author: Dirk Eddelbuettel <edd@debian.org>
+Origin: other
+Forwarded: no
+Last-Update: 2021-12-26
+
+--- aws-sdk-cpp-only-s3-1.8.117.orig/cmake/AWSSDKConfig.cmake
++++ aws-sdk-cpp-only-s3-1.8.117/cmake/AWSSDKConfig.cmake
+@@ -63,6 +63,9 @@ if(AWSSDK_DEFAULT_ROOT_DIR STREQUAL "/")
+   set(AWSSDK_DEFAULT_ROOT_DIR "")
+ endif()
+ 
++## Override to ensure the installation is found
++set(AWSSDK_ROOT_DIR "/usr")
++
+ # currently AWSSDK_ROOT_DIR is either empty or user specified
+ if (AWSSDK_ROOT_DIR)
+     find_file(AWSSDK_CORE_HEADER_FILE Aws.h

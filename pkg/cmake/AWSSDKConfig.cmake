@@ -63,6 +63,9 @@ if(AWSSDK_DEFAULT_ROOT_DIR STREQUAL "/")
   set(AWSSDK_DEFAULT_ROOT_DIR "")
 endif()
 
+## Override to ensure the installation is found
+set(AWSSDK_ROOT_DIR "/usr")
+
 # currently AWSSDK_ROOT_DIR is either empty or user specified
 if (AWSSDK_ROOT_DIR)
     find_file(AWSSDK_CORE_HEADER_FILE Aws.h
