@@ -1,1 +1,3 @@
 #skip_one_crypto_assert
+cmake_322_support
+allow_Werror

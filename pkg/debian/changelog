@@ -1,3 +1,11 @@
+aws-sdk-cpp-only-s3 (1.8.117-2.debian.1) unstable; urgency=medium
+
+  * cmake/AWSSDKConfig.cmake: Apply patch to cmake configuration to
+  permit use of cmake 3.22
+  * cmake/compiler_settings.cmake: Remove -Werror
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Tue, 30 Nov 2021 08:08:00 -0600
+
 aws-sdk-cpp-only-s3 (1.8.117-1.debian.1) unstable; urgency=medium
 
   * Debian build of informal and unofficial package

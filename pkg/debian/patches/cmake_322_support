@@ -1,0 +1,28 @@
+Description: Support cmake 3.22 and later
+ The cmake configuration needs a two-line change to support 3.22 and
+ later; this has also been submitted upstream.
+Author: Dirk Eddelbuettel <edd@debian.org>
+Origin: https://github.com/TileDB-Inc/TileDB/pull/2639
+Last-Update: 2021-11-30
+
+--- aws-sdk-cpp-only-s3-1.8.117.orig/cmake/AWSSDKConfig.cmake
++++ aws-sdk-cpp-only-s3-1.8.117/cmake/AWSSDKConfig.cmake
+@@ -116,11 +116,13 @@ endif()
+ get_filename_component(TEMP_PATH "${AWSSDK_CORE_LIB_FILE}" PATH)
+ get_filename_component(TEMP_NAME "${TEMP_PATH}" NAME)
+ 
+-while (NOT TEMP_NAME STREQUAL ${LIB_SEARCH_PREFIX})
+-    set(TEMP_PLATFORM_PREFIX "${TEMP_NAME}/${TEMP_PLATFORM_PREFIX}")
+-    get_filename_component(TEMP_PATH "${TEMP_PATH}" PATH)
+-    get_filename_component(TEMP_NAME "${TEMP_PATH}" NAME)
+-endwhile()
++if(LIB_SEARCH_PREFIX)
++    while (NOT TEMP_NAME STREQUAL "${LIB_SEARCH_PREFIX}")
++        set(TEMP_PLATFORM_PREFIX "${TEMP_NAME}/${TEMP_PLATFORM_PREFIX}")
++        get_filename_component(TEMP_PATH "${TEMP_PATH}" PATH)
++        get_filename_component(TEMP_NAME "${TEMP_PATH}" NAME)
++    endwhile()
++endif()
+ 
+ set(AWSSDK_PLATFORM_PREFIX "${TEMP_PLATFORM_PREFIX}")
+ 
